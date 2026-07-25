@@ -29,7 +29,7 @@ jobs:
           cp index.html tailwind.css robots.txt sitemap.xml llms.txt _headers _site/
           cp -R assets _site/assets
 
-      - uses: cloudflare/wrangler-action@v3
+      - uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: 3a697dea3fa91343def5ec41ebef7d73
