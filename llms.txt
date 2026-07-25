@@ -1,0 +1,16 @@
+# Pinstruct
+
+> Pinstruct is a local-first macOS menu-bar app for visual review: capture anything visible on your Mac, drop numbered feedback pins with categories and comments, and export implementation-ready briefs for teammates or coding agents. No cloud, no accounts, no telemetry.
+
+Pinstruct organizes feedback into five categories — Design, Bug, Copy, Accessibility, and Question — each pinned to an exact position on a frozen screenshot. Reviews export as agent-ready Markdown (with per-pin positions and crops), human-readable Markdown, annotated PNGs, or complete review packages, and can be posted directly as a comment on a GitHub or Bitbucket pull request.
+
+## Product
+
+- [Pinstruct landing page](https://denniseilander.github.io/pinstruct/): Overview, interactive demo of the pin-and-review workflow, and export examples
+- [Get Pinstruct on Glaze](https://www.glaze.app/app/pinstruct-WxB8jL): Download for macOS (Apple silicon)
+
+## Key facts
+
+- Platform: macOS (Apple silicon), lives in the menu bar, default shortcut ⌃⇧R
+- Local-first: reviews and screenshots stay on-device; optional GitHub/Bitbucket tokens are stored encrypted locally
+- Export formats: Copy for Agent (Markdown brief), Markdown, plain list, annotated PNG, review package, PR comment
