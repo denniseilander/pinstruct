@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy to Cloudflare Pages
 
 on:
   push:
@@ -7,16 +7,9 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-# NOTE: no concurrency block on purpose. As of 2026-07-25 any workflow-level
-# concurrency setting in this repo makes runs die at startup with a GitHub-side
-# internal server error (zero jobs created). Re-add once GitHub fixes it:
-#   concurrency: { group: pages, cancel-in-progress: true }
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,16 +29,8 @@ jobs:
           cp index.html tailwind.css robots.txt sitemap.xml llms.txt _site/
           cp -R assets _site/assets
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: cloudflare/wrangler-action@v3
         with:
-          path: _site
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: 3a697dea3fa91343def5ec41ebef7d73
+          command: pages deploy _site --project-name=pinstruct --branch=main
