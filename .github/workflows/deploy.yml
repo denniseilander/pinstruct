@@ -10,11 +10,10 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  # renamed from "pages" — that group got wedged on GitHub's side and every run
-  # using it failed at startup with an internal server error before jobs were created
-  group: pages-deploy
-  cancel-in-progress: true
+# NOTE: no concurrency block on purpose. As of 2026-07-25 any workflow-level
+# concurrency setting in this repo makes runs die at startup with a GitHub-side
+# internal server error (zero jobs created). Re-add once GitHub fixes it:
+#   concurrency: { group: pages, cancel-in-progress: true }
 
 jobs:
   build:
