@@ -271,7 +271,7 @@
 
       <a
         href="#download"
-        class="rounded-lg bg-sys-blue px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-[#2f96ff] sm:px-4 sm:text-[13px]"
+        class="rounded-lg bg-sys-blue-deep px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-[#0077ED] sm:px-4 sm:text-[13px]"
       >
         Get Pinstruct
       </a>
@@ -307,7 +307,7 @@
           <div class="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
             <a
               href="#download"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-sys-blue px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#2f96ff] sm:w-auto sm:min-w-44"
+              class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-sys-blue-deep px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#0077ED] sm:w-auto sm:min-w-44"
             >
               Get Pinstruct
             </a>
@@ -489,7 +489,7 @@
               <button
                 id="finishReviewBtn"
                 type="button"
-                class="ml-0.5 inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-sys-blue px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#2f96ff]"
+                class="ml-0.5 inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-sys-blue-deep px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#0077ED]"
               >
                 <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                 Finish Review
@@ -657,7 +657,7 @@
                 <button
                   id="previewExportBtn"
                   type="button"
-                  class="mt-7 inline-flex items-center gap-2 rounded-xl bg-sys-blue px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2f96ff]"
+                  class="mt-7 inline-flex items-center gap-2 rounded-xl bg-sys-blue-deep px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0077ED]"
                 >
                   Preview your export
                   <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true">
@@ -697,14 +697,14 @@
               Connect GitHub or Bitbucket with a personal token — it never leaves your Mac. Pinstruct uploads the annotated screenshot plus a marked crop per pin, and posts everything as one comment on the pull request you pick.
             </p>
 
-            <div class="mt-7 flex gap-2" role="tablist" aria-label="Git provider">
-              <button type="button" id="ghTab" data-provider="github" class="pr-tab inline-flex items-center gap-2.5 rounded-xl border px-5 py-3 text-sm font-semibold transition" aria-selected="true">
+            <div class="mt-7 flex gap-2" role="group" aria-label="Git provider">
+              <button type="button" id="ghTab" data-provider="github" class="pr-tab inline-flex items-center gap-2.5 rounded-xl border px-5 py-3 text-sm font-semibold transition" aria-pressed="true">
                 <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
                   <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
                 </svg>
                 GitHub
               </button>
-              <button type="button" id="bbTab" data-provider="bitbucket" class="pr-tab inline-flex items-center gap-2.5 rounded-xl border px-5 py-3 text-sm font-semibold transition" aria-selected="false">
+              <button type="button" id="bbTab" data-provider="bitbucket" class="pr-tab inline-flex items-center gap-2.5 rounded-xl border px-5 py-3 text-sm font-semibold transition" aria-pressed="false">
                 <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
                   <path d="M.778 1.213a.768.768 0 0 0-.768.892l3.263 19.81c.084.5.515.868 1.022.873H19.95a.772.772 0 0 0 .77-.646l3.27-20.03a.768.768 0 0 0-.768-.891zM14.52 15.53H9.522L8.17 8.466h7.561z"/>
                 </svg>
@@ -867,7 +867,7 @@
               href="https://www.glaze.app/app/pinstruct-WxB8jL"
               target="_blank"
               rel="noopener noreferrer"
-              class="inline-flex w-full items-center justify-center rounded-xl bg-sys-blue px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-[#2f96ff] sm:w-auto sm:min-w-52"
+              class="inline-flex w-full items-center justify-center rounded-xl bg-sys-blue-deep px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-[#0077ED] sm:w-auto sm:min-w-52"
             >
               Get Pinstruct on Glaze
             </a>
@@ -918,7 +918,7 @@
       <pre id="exportOutput" class="mono mt-4 max-h-72 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-white/10 bg-black/40 p-4 text-[12px] leading-[1.7] text-white/75"></pre>
 
       <div class="mt-5 flex items-center gap-3">
-        <button id="exportCopyBtn" type="button" class="rounded-xl bg-sys-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2f96ff]">Copy</button>
+        <button id="exportCopyBtn" type="button" class="rounded-xl bg-sys-blue-deep px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0077ED]">Copy</button>
         <span id="exportCopiedHint" class="text-xs text-sys-green opacity-0 transition-opacity">Copied</span>
       </div>
     </div>
@@ -1110,7 +1110,7 @@
           <div class="flex items-center gap-2">
             <span class="hidden items-center gap-1 text-[10px] text-white/30 sm:flex"><span class="keycap keycap-sm">⌘</span><span class="keycap keycap-sm">↩</span></span>
             <button type="button" data-role="cancel" class="rounded-lg border border-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/60 transition hover:text-white/90">Cancel</button>
-            <button type="button" data-role="save" class="rounded-lg bg-sys-blue px-3.5 py-1.5 text-[11px] font-semibold text-white transition hover:bg-[#2f96ff] disabled:opacity-40">Save Feedback</button>
+            <button type="button" data-role="save" class="rounded-lg bg-sys-blue-deep px-3.5 py-1.5 text-[11px] font-semibold text-white transition hover:bg-[#0077ED] disabled:opacity-40">Save Feedback</button>
           </div>
         </div>
       `;
@@ -1480,7 +1480,7 @@
       prMockHeader.innerHTML = p.headerHtml;
       prTabs.forEach((tab) => {
         const active = tab.dataset.provider === name;
-        tab.setAttribute("aria-selected", String(active));
+        tab.setAttribute("aria-pressed", String(active));
         tab.style.borderColor = active ? "rgba(255,255,255,.3)" : "rgba(255,255,255,.1)";
         tab.style.background = active ? "rgba(255,255,255,.1)" : "rgba(255,255,255,.03)";
         tab.style.color = active ? "#fff" : "rgba(255,255,255,.5)";
