@@ -1,0 +1,10 @@
+name: Probe
+on: workflow_dispatch
+concurrency:
+  group: totally-fresh-group-x1
+  cancel-in-progress: true
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo ok
