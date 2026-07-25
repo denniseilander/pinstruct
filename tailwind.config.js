@@ -17,7 +17,7 @@ module.exports = {
       colors: {
         ink: "#070711",
         panel: "#10101c",
-        violet: "#8757ff",
+        "violet-brand": "#8757ff",
         electric: "#399dff",
         coral: "#ff7558",
         magenta: "#ec4dd8"

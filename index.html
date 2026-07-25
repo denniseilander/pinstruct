@@ -367,7 +367,7 @@
       <div class="relative mx-auto max-w-7xl">
         <div class="reveal mx-auto max-w-4xl text-center">
           <div class="mb-6 inline-flex max-w-full items-center gap-2 rounded-full border border-white/10 bg-white/[.045] px-3.5 py-2 text-[11px] font-medium text-white/68 shadow-glow backdrop-blur-xl sm:text-xs">
-            <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-violet"></span>
+            <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-violet-brand"></span>
             Native visual review for macOS
           </div>
 
@@ -450,28 +450,25 @@
             </div>
 
             <div class="glass rounded-[28px] p-6 sm:p-8">
-              <p class="text-sm font-medium text-fuchsia-300">What you can capture</p>
-              <div class="mt-6 space-y-3">
-                <div class="rounded-2xl border border-cyan-300/15 bg-cyan-400/[.05] p-4">
-                  <p class="text-sm font-semibold text-cyan-200">Question</p>
-                  <p class="mt-1 text-sm text-white/60">Should this action be more prominent?</p>
-                </div>
-                <div class="rounded-2xl border border-orange-300/15 bg-orange-400/[.05] p-4">
-                  <p class="text-sm font-semibold text-orange-200">Design</p>
-                  <p class="mt-1 text-sm text-white/60">Make the primary button stronger.</p>
-                </div>
-                <div class="rounded-2xl border border-fuchsia-300/15 bg-fuchsia-400/[.05] p-4">
-                  <p class="text-sm font-semibold text-fuchsia-200">Bug</p>
-                  <p class="mt-1 text-sm text-white/60">Text wraps incorrectly on smaller widths.</p>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                  <div class="rounded-2xl border border-emerald-300/15 bg-emerald-400/[.05] p-4">
-                    <p class="text-sm font-semibold text-emerald-200">Copy</p>
-                    <p class="mt-1 text-sm text-white/60">Clarify wording.</p>
-                  </div>
-                  <div class="rounded-2xl border border-violet-300/15 bg-violet-400/[.05] p-4">
-                    <p class="text-sm font-semibold text-violet-200">Accessibility</p>
-                    <p class="mt-1 text-sm text-white/60">Improve contrast.</p>
+              <div class="flex items-center justify-between gap-3">
+                <p class="text-sm font-medium text-fuchsia-300">What you can capture</p>
+                <span class="text-[11px] text-white/35">Tap a type</span>
+              </div>
+
+              <div class="mt-5 flex flex-wrap gap-2" role="group" aria-label="Feedback category">
+                <button type="button" data-cat="question" aria-pressed="true" class="cat-chip rounded-full border border-cyan-300/40 bg-cyan-400/10 px-3.5 py-1.5 text-xs font-semibold text-cyan-200 transition">Question</button>
+                <button type="button" data-cat="design" aria-pressed="false" class="cat-chip rounded-full border border-white/10 bg-white/[.03] px-3.5 py-1.5 text-xs font-semibold text-white/55 transition hover:border-white/20 hover:text-white/80">Design</button>
+                <button type="button" data-cat="bug" aria-pressed="false" class="cat-chip rounded-full border border-white/10 bg-white/[.03] px-3.5 py-1.5 text-xs font-semibold text-white/55 transition hover:border-white/20 hover:text-white/80">Bug</button>
+                <button type="button" data-cat="copy" aria-pressed="false" class="cat-chip rounded-full border border-white/10 bg-white/[.03] px-3.5 py-1.5 text-xs font-semibold text-white/55 transition hover:border-white/20 hover:text-white/80">Copy</button>
+                <button type="button" data-cat="a11y" aria-pressed="false" class="cat-chip rounded-full border border-white/10 bg-white/[.03] px-3.5 py-1.5 text-xs font-semibold text-white/55 transition hover:border-white/20 hover:text-white/80">Accessibility</button>
+              </div>
+
+              <div id="catPreview" class="mt-5 rounded-2xl border border-cyan-300/15 bg-cyan-400/[.05] p-4 transition-colors">
+                <div class="flex items-start gap-3">
+                  <span id="catBadge" class="review-type-badge shrink-0 border border-cyan-300/35 text-sm font-semibold text-cyan-200">?</span>
+                  <div>
+                    <p id="catLabel" class="text-sm font-semibold text-cyan-200">Question</p>
+                    <p id="catText" class="mt-1 text-sm text-white/70">Should this action be more prominent?</p>
                   </div>
                 </div>
               </div>
@@ -895,6 +892,83 @@
         });
       });
     }
+
+    const CHIP_BASE = "cat-chip rounded-full border px-3.5 py-1.5 text-xs font-semibold transition";
+    const CHIP_INACTIVE = "border-white/10 bg-white/[.03] text-white/55 hover:border-white/20 hover:text-white/80";
+
+    const CATEGORIES = {
+      question: {
+        chip: "border-cyan-300/40 bg-cyan-400/10 text-cyan-200",
+        preview: "border-cyan-300/15 bg-cyan-400/[.05]",
+        badge: "border-cyan-300/35 text-cyan-200",
+        label: "text-cyan-200",
+        glyph: "?",
+        name: "Question",
+        text: "Should this action be more prominent?",
+      },
+      design: {
+        chip: "border-orange-300/40 bg-orange-400/10 text-orange-200",
+        preview: "border-orange-300/15 bg-orange-400/[.05]",
+        badge: "border-orange-300/35 text-orange-200",
+        label: "text-orange-200",
+        glyph: "D",
+        name: "Design",
+        text: "Make the primary button stronger.",
+      },
+      bug: {
+        chip: "border-fuchsia-300/40 bg-fuchsia-400/10 text-fuchsia-200",
+        preview: "border-fuchsia-300/15 bg-fuchsia-400/[.05]",
+        badge: "border-fuchsia-300/35 text-fuchsia-200",
+        label: "text-fuchsia-200",
+        glyph: "!",
+        name: "Bug",
+        text: "Text wraps incorrectly on smaller widths.",
+      },
+      copy: {
+        chip: "border-emerald-300/40 bg-emerald-400/10 text-emerald-200",
+        preview: "border-emerald-300/15 bg-emerald-400/[.05]",
+        badge: "border-emerald-300/35 text-emerald-200",
+        label: "text-emerald-200",
+        glyph: "T",
+        name: "Copy",
+        text: 'Change "Submit" to "Save changes".',
+      },
+      a11y: {
+        chip: "border-violet-300/40 bg-violet-400/10 text-violet-200",
+        preview: "border-violet-300/15 bg-violet-400/[.05]",
+        badge: "border-violet-300/35 text-violet-200",
+        label: "text-violet-200",
+        glyph: "A",
+        name: "Accessibility",
+        text: "Increase chart-label contrast and improve readability.",
+      },
+    };
+
+    const catChips = document.querySelectorAll(".cat-chip");
+    const catPreview = document.getElementById("catPreview");
+    const catBadge = document.getElementById("catBadge");
+    const catLabel = document.getElementById("catLabel");
+    const catText = document.getElementById("catText");
+
+    function setCategory(cat) {
+      const data = CATEGORIES[cat];
+      if (!data) return;
+
+      catChips.forEach((chip) => {
+        const active = chip.dataset.cat === cat;
+        chip.setAttribute("aria-pressed", String(active));
+        chip.className = `${CHIP_BASE} ${active ? data.chip : CHIP_INACTIVE}`;
+      });
+
+      catPreview.className = `mt-5 rounded-2xl border p-4 transition-colors ${data.preview}`;
+      catBadge.className = `review-type-badge shrink-0 border text-sm font-semibold ${data.badge}`;
+      catBadge.textContent = data.glyph;
+      catLabel.className = `text-sm font-semibold ${data.label}`;
+      catLabel.textContent = data.name;
+      catText.textContent = data.text;
+    }
+
+    catChips.forEach((chip) => chip.addEventListener("click", () => setCategory(chip.dataset.cat)));
   </script>
 </body>
 </html>
