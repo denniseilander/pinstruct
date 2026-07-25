@@ -47,11 +47,10 @@
   <link rel="stylesheet" href="tailwind.css" />
 
   <style>
-    :root {
-      color-scheme: dark;
-      --mouse-x: 50%;
-      --mouse-y: 20%;
-    }
+    :root { color-scheme: dark; }
+
+    /* clip (not hidden): kills sideways bleed from unclipped aurora blobs without creating a scroll container */
+    html { overflow-x: clip; }
 
     * { box-sizing: border-box; }
 
@@ -59,40 +58,32 @@
       margin: 0;
       overflow-x: hidden;
       background:
-        radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(117, 73, 255, .12), transparent 28rem),
+        radial-gradient(60rem 40rem at 15% -5%, rgba(57, 105, 255, .14), transparent),
+        radial-gradient(55rem 40rem at 90% 10%, rgba(157, 78, 255, .12), transparent),
+        radial-gradient(50rem 45rem at 60% 100%, rgba(255, 110, 60, .06), transparent),
         #070711;
-      color: #f8f7ff;
+      color: #f5f5f7;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
     }
 
-    ::selection {
-      background: rgba(139, 92, 246, .52);
-      color: #fff;
-    }
-
-    .noise {
-      position: fixed;
+    .grid-bg {
+      position: absolute;
       inset: 0;
       pointer-events: none;
-      z-index: 80;
-      opacity: .035;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
-    }
-
-    .grid-bg {
       background-image:
         linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
       background-size: 52px 52px;
       mask-image: linear-gradient(to bottom, black, transparent 85%);
+      -webkit-mask-image: linear-gradient(to bottom, black, transparent 85%);
     }
 
     .aurora {
       position: absolute;
       border-radius: 999px;
       filter: blur(100px);
-      opacity: .28;
+      opacity: .26;
       pointer-events: none;
       animation: drift 14s ease-in-out infinite alternate;
     }
@@ -114,8 +105,42 @@
       color: transparent;
     }
 
-    .glass {
-      background: linear-gradient(180deg, rgba(255,255,255,.075), rgba(255,255,255,.025));
+    ::selection {
+      background: rgba(10, 132, 255, .45);
+      color: #fff;
+    }
+
+    /* macOS-style raised keycap */
+    .keycap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.7rem;
+      height: 1.7rem;
+      padding: 0 .45rem;
+      border-radius: .45rem;
+      background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.07));
+      border: 1px solid rgba(255,255,255,.18);
+      border-bottom-color: rgba(255,255,255,.08);
+      box-shadow: 0 2px 0 rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.12);
+      font-size: .8rem;
+      font-weight: 600;
+      color: rgba(255,255,255,.88);
+      line-height: 1;
+    }
+
+    .keycap-sm {
+      min-width: 1.25rem;
+      height: 1.25rem;
+      padding: 0 .3rem;
+      font-size: .62rem;
+      border-radius: .35rem;
+      box-shadow: 0 1.5px 0 rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
+    }
+
+    /* Glassy surface for marketing panels (the app-authentic popover-panel below stays native) */
+    .panel {
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
       border: 1px solid rgba(255,255,255,.095);
       box-shadow:
         inset 0 1px 0 rgba(255,255,255,.08),
@@ -124,47 +149,87 @@
       -webkit-backdrop-filter: blur(22px);
     }
 
-    .hero-frame {
-      position: relative;
-      isolation: isolate;
-      box-shadow:
-        0 40px 130px rgba(0,0,0,.58),
-        0 0 90px rgba(106,73,255,.16);
+    /* The app's popover surface (composer, toolbar, modals) */
+    .popover-panel {
+      background: rgba(32,32,36,.97);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 18px 55px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
-    .hero-frame::before {
-      content: "";
+    /* Numbered feedback pin — exact style from the app's PinMarker */
+    .pin-marker {
       position: absolute;
-      inset: -1px;
-      z-index: -1;
-      border-radius: inherit;
-      background: linear-gradient(
-        110deg,
-        rgba(76,166,255,.48),
-        rgba(153,84,255,.32) 42%,
-        rgba(255,92,151,.30) 68%,
-        rgba(255,135,67,.46)
-      );
-      filter: blur(12px);
-      opacity: .55;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: 0;
+      padding: 0;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 2px #fff, 0 2px 6px rgba(0,0,0,.4);
+      cursor: grab;
+      touch-action: none;
+      transition: transform .15s ease, box-shadow .15s ease;
+      z-index: 10;
     }
 
-    .hero-image {
-      animation: breathe 7s ease-in-out infinite;
-      transform-origin: center;
+    .pin-marker.dragging {
+      cursor: grabbing;
+      transition: none;
     }
 
-    @keyframes breathe {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.012); }
+    .pin-marker:hover { transform: translate(-50%, -50%) scale(1.08); }
+
+    .pin-marker.selected {
+      transform: translate(-50%, -50%) scale(1.12);
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(10,132,255,.9), 0 2px 8px rgba(0,0,0,.45);
+      z-index: 20;
     }
+
+    .pin-drop { animation: pin-drop .28s cubic-bezier(.3,1.4,.5,1); }
+
+    @keyframes pin-drop {
+      0% { transform: translate(-50%, -50%) scale(.4); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    /* Capture-active glow around the demo screen */
+    .capture-frame {
+      box-shadow:
+        0 0 0 1px rgba(10,132,255,.32),
+        0 0 70px rgba(10,132,255,.14),
+        0 0 130px rgba(157,78,255,.10),
+        0 40px 110px rgba(0,0,0,.6);
+    }
+
+    .toolbar-btn {
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      color: rgba(255,255,255,.6);
+      transition: background-color .15s ease, color .15s ease;
+    }
+
+    .toolbar-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+    .toolbar-btn[disabled] { opacity: .35; pointer-events: none; }
 
     .reveal {
       opacity: 0;
-      transform: translateY(24px);
+      transform: translateY(20px);
       transition:
-        opacity .8s cubic-bezier(.2,.65,.25,1),
-        transform .8s cubic-bezier(.2,.65,.25,1);
+        opacity .7s cubic-bezier(.2,.65,.25,1),
+        transform .7s cubic-bezier(.2,.65,.25,1);
     }
 
     .reveal.visible {
@@ -172,185 +237,41 @@
       transform: translateY(0);
     }
 
-    .feature-card {
-      transform-style: preserve-3d;
-      transition:
-        transform .18s ease,
-        border-color .25s ease,
-        background-color .25s ease;
-    }
-
-    .feature-card:hover {
-      border-color: rgba(153, 100, 255, .34);
-      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.035));
-    }
-
-    .feature-card > * {
-      transform: translateZ(24px);
-    }
-
-    .number-orbit {
-      position: relative;
-    }
-
-    .number-orbit::before,
-    .number-orbit::after {
-      content: "";
-      position: absolute;
-      border: 1px solid rgba(143, 104, 255, .25);
-      border-radius: 999px;
-      inset: -11px;
-      animation: orbit-pulse 3.5s ease-in-out infinite;
-    }
-
-    .number-orbit::after {
-      inset: -20px;
-      animation-delay: -1.2s;
-    }
-
-    @keyframes orbit-pulse {
-      0%, 100% { opacity: .15; transform: scale(.9); }
-      50% { opacity: .65; transform: scale(1.07); }
-    }
-
-    .flow-line {
-      position: absolute;
-      left: 50%;
-      top: 72px;
-      bottom: -48px;
-      width: 1px;
-      overflow: hidden;
-      background: linear-gradient(to bottom, rgba(129,92,246,.8), rgba(255,255,255,.08));
-    }
-
-    .flow-line::after {
-      content: "";
-      position: absolute;
-      left: -1px;
-      top: -35%;
-      width: 3px;
-      height: 32%;
-      background: linear-gradient(to bottom, transparent, #a86bff, transparent);
-      animation: flow 3.2s linear infinite;
-    }
-
-    @keyframes flow {
-      to { transform: translateY(430%); }
-    }
-
-    .marquee-mask {
-      mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
-    }
-
-    .marquee-track {
-      width: max-content;
-      animation: marquee 26s linear infinite;
-    }
-
-    @keyframes marquee {
-      to { transform: translateX(-50%); }
-    }
-
-    .shine-button {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .shine-button::after {
-      content: "";
-      position: absolute;
-      top: -150%;
-      left: -40%;
-      width: 30%;
-      height: 400%;
-      transform: rotate(28deg);
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.48), transparent);
-      transition: left .7s ease;
-    }
-
-    .shine-button:hover::after {
-      left: 120%;
-    }
-
-    .cursor-glow {
-      position: fixed;
-      z-index: 70;
-      width: 180px;
-      height: 180px;
-      margin: -90px 0 0 -90px;
-      border-radius: 999px;
-      pointer-events: none;
-      opacity: 0;
-      filter: blur(1px);
-      background: radial-gradient(circle, rgba(137,92,246,.11), transparent 68%);
-      transition: opacity .25s ease;
-    }
-
-    .review-type {
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      border: 1px solid rgba(255,255,255,.08);
-    }
-
-    .review-type-badge {
-      width: 2rem;
-      height: 2rem;
-      min-width: 2rem;
-      min-height: 2rem;
-      flex: 0 0 2rem;
-      aspect-ratio: 1 / 1;
-      border-radius: 9999px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-    }
-
-    @media (max-width: 640px) {
-      .marquee-track { animation-duration: 34s; }
-    }
-
-    @media (pointer: fine) {
-      body:hover .cursor-glow { opacity: 1; }
+    .mono {
+      font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, monospace;
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *,
-      *::before,
-      *::after {
+      *, *::before, *::after {
         scroll-behavior: auto !important;
         animation-duration: .001ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: .001ms !important;
       }
 
-      .reveal {
-        opacity: 1;
-        transform: none;
-      }
+      .reveal { opacity: 1; transform: none; }
     }
   </style>
 </head>
 
 <body class="font-sans">
-  <div class="noise"></div>
-  <div id="cursorGlow" class="cursor-glow"></div>
-
-  <header class="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4">
-    <nav class="glass mx-auto flex max-w-7xl items-center justify-between rounded-2xl px-3 py-3 sm:px-5">
-      <a href="#top" class="flex min-w-0 items-center gap-3" aria-label="Pinstruct home">
-        <img src="assets/logo.webp" alt="" fetchpriority="high" class="h-9 w-9 shrink-0 rounded-[11px] shadow-glow" />
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-white/[.07] bg-[#070711]/70 backdrop-blur-xl">
+    <nav class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-8">
+      <a href="#top" class="flex min-w-0 items-center gap-2.5" aria-label="Pinstruct home">
+        <img src="assets/logo.webp" alt="" fetchpriority="high" class="h-8 w-8 shrink-0 rounded-[9px]" />
         <span class="truncate text-[15px] font-semibold tracking-[-0.02em]">Pinstruct</span>
       </a>
 
-      <div class="hidden items-center gap-7 text-sm text-white/62 md:flex">
+      <div class="hidden items-center gap-7 text-[13px] text-white/60 md:flex">
         <a href="#features" class="transition hover:text-white">Features</a>
         <a href="#workflow" class="transition hover:text-white">How it works</a>
+        <a href="#integrations" class="transition hover:text-white">Integrations</a>
         <a href="#built-for" class="transition hover:text-white">Built for</a>
       </div>
 
       <a
         href="#download"
-        class="shine-button rounded-xl bg-white px-3.5 py-2 text-xs font-semibold text-black transition hover:bg-white/90 sm:px-4 sm:text-sm"
+        class="rounded-lg bg-sys-blue px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-[#2f96ff] sm:px-4 sm:text-[13px]"
       >
         Get Pinstruct
       </a>
@@ -358,398 +279,518 @@
   </header>
 
   <main id="top">
-    <section class="relative min-h-screen overflow-hidden px-4 pb-20 pt-32 sm:px-8 sm:pb-24 lg:pt-40">
-      <div class="grid-bg absolute inset-0"></div>
+    <!-- ============================== HERO ============================== -->
+    <section class="relative px-4 pb-16 pt-28 sm:px-8 sm:pb-24 sm:pt-36">
+      <div class="grid-bg"></div>
       <div class="aurora left-[-12rem] top-[-10rem] h-[36rem] w-[36rem] bg-blue-600"></div>
       <div class="aurora aurora-two right-[-12rem] top-[3rem] h-[34rem] w-[34rem] bg-fuchsia-600"></div>
-      <div class="aurora bottom-[-16rem] left-[38%] h-[28rem] w-[28rem] bg-orange-500"></div>
+      <div class="aurora bottom-[-16rem] left-[38%] h-[28rem] w-[28rem] bg-orange-500 opacity-20"></div>
 
-      <div class="relative mx-auto max-w-7xl">
-        <div class="reveal mx-auto max-w-4xl text-center">
-          <div class="mb-6 inline-flex max-w-full items-center gap-2 rounded-full border border-white/10 bg-white/[.045] px-3.5 py-2 text-[11px] font-medium text-white/68 shadow-glow backdrop-blur-xl sm:text-xs">
-            <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-violet-brand"></span>
-            Native visual review for macOS
+      <div class="relative mx-auto max-w-6xl">
+        <div class="reveal mx-auto max-w-3xl text-center">
+          <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[.05] px-3.5 py-1.5 text-[11px] font-medium text-white/65 sm:text-xs">
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 text-sys-blue" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/>
+            </svg>
+            Lives in your menu bar · macOS native
           </div>
 
-          <h1 class="text-balance text-4xl font-semibold tracking-[-0.065em] sm:text-6xl lg:text-[6.4rem] lg:leading-[.92]">
-            Point at the problem.
-            <span class="gradient-text mt-2 block">Ship the instruction.</span>
+          <h1 class="text-balance text-4xl font-semibold tracking-[-0.045em] sm:text-6xl lg:text-7xl">
+            Point at the problem.<br />
+            <span class="gradient-text">Ship the instruction.</span>
           </h1>
 
-          <p class="mx-auto mt-6 max-w-2xl text-pretty text-[15px] leading-7 text-white/58 sm:text-lg sm:leading-8">
-            Capture anything visible on your Mac, pin precise feedback, and turn every comment into context your team or coding agent can act on.
+          <p class="mx-auto mt-6 max-w-2xl text-pretty text-[15px] leading-7 text-white/55 sm:text-lg sm:leading-8">
+            Freeze anything visible on your Mac, pin numbered feedback exactly where it belongs, and hand your team — or your coding agent — a brief it can act on.
           </p>
 
           <div class="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
             <a
               href="#download"
-              class="shine-button inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3.5 text-sm font-semibold text-black shadow-[0_14px_45px_rgba(255,255,255,.12)] transition hover:-translate-y-0.5 sm:w-auto sm:min-w-44"
+              class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-sys-blue px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#2f96ff] sm:w-auto sm:min-w-44"
             >
               Get Pinstruct
-              <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true">
-                <path d="M4 10h11M11 6l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
             </a>
-
             <a
               href="#workflow"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[.045] px-6 py-3.5 text-sm font-semibold text-white/78 backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[.075] hover:text-white sm:w-auto sm:min-w-44"
+              class="inline-flex w-full items-center justify-center rounded-xl border border-white/12 bg-white/[.05] px-6 py-3 text-sm font-semibold text-white/75 transition hover:border-white/25 hover:text-white sm:w-auto sm:min-w-44"
             >
-              See how it works
+              See the workflow
             </a>
           </div>
 
-          <div class="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-white/38 sm:text-xs">
-            <span>Local-first</span>
-            <span class="hidden h-1 w-1 rounded-full bg-white/20 sm:block"></span>
-            <span>No browser extension</span>
-            <span class="hidden h-1 w-1 rounded-full bg-white/20 sm:block"></span>
-            <span>Built for humans and agents</span>
+          <div class="mt-7 flex items-center justify-center gap-2 text-xs text-white/45">
+            <span>Press</span>
+            <span class="keycap" aria-label="Control">⌃</span>
+            <span class="keycap" aria-label="Shift">⇧</span>
+            <span class="keycap">R</span>
+            <span>to capture what you're looking at</span>
           </div>
         </div>
 
-        
-        <div class="reveal mx-auto mt-14 max-w-6xl sm:mt-20">
-          <div class="grid gap-5 lg:grid-cols-[1.15fr_.85fr]">
-            <div class="glass rounded-[28px] p-6 sm:p-8">
-              <div class="flex items-center justify-between gap-4">
-                <div>
-                  <p class="text-sm font-medium text-blue-300">Fast visual review</p>
-                  <h2 class="mt-2 text-2xl font-semibold tracking-[-.04em] sm:text-3xl">
-                    Built for quick feedback loops.
-                  </h2>
-                </div>
-                <div class="rounded-2xl border border-white/10 bg-white/[.04] px-4 py-2 text-xs text-white/55">
-                  macOS native
-                </div>
+        <!-- ==================== LIVE OVERLAY DEMO ==================== -->
+        <div class="reveal mt-12 sm:mt-16">
+          <div
+            id="captureDemo"
+            class="capture-frame relative aspect-[4/3] cursor-crosshair select-none overflow-hidden rounded-2xl sm:aspect-[16/10]"
+          >
+            <!-- macOS menu bar -->
+            <div class="pointer-events-none relative z-[5] flex h-8 items-center justify-between border-b border-black/40 bg-[#1a1a1e]/95 px-3 text-[11px] text-white/70 sm:px-4">
+              <div class="flex items-center gap-4">
+                <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 text-white/85" fill="currentColor" aria-hidden="true">
+                  <path d="M17.05 12.54c-.03-2.71 2.21-4.01 2.31-4.07-1.26-1.84-3.22-2.09-3.91-2.12-1.66-.17-3.25.98-4.09.98-.85 0-2.15-.96-3.54-.93-1.82.03-3.5 1.06-4.44 2.69-1.89 3.28-.48 8.14 1.36 10.8.9 1.3 1.97 2.76 3.38 2.71 1.36-.05 1.87-.88 3.51-.88 1.63 0 2.1.88 3.53.85 1.46-.02 2.39-1.32 3.28-2.63 1.03-1.51 1.46-2.97 1.48-3.05-.03-.01-2.84-1.09-2.87-4.35zM14.36 4.6c.75-.91 1.25-2.17 1.11-3.43-1.08.04-2.38.72-3.15 1.62-.69.8-1.3 2.09-1.14 3.32 1.2.09 2.43-.61 3.18-1.51z"/>
+                </svg>
+                <span class="font-semibold text-white/85">Lumen</span>
+                <span class="hidden sm:inline">File</span>
+                <span class="hidden sm:inline">Edit</span>
+                <span class="hidden sm:inline">View</span>
+                <span class="hidden sm:inline">Window</span>
+                <span class="hidden sm:inline">Help</span>
               </div>
-
-              <div class="mt-7 grid gap-4 sm:grid-cols-3">
-                <div class="rounded-2xl border border-white/10 bg-white/[.03] p-4">
-                  <p class="text-xs uppercase tracking-[.18em] text-white/35">Capture</p>
-                  <p class="mt-2 text-lg font-semibold">One shortcut</p>
-                  <p class="mt-2 text-sm leading-6 text-white/52">
-                    Review the active window instantly without a browser extension.
-                  </p>
-                </div>
-                <div class="rounded-2xl border border-white/10 bg-white/[.03] p-4">
-                  <p class="text-xs uppercase tracking-[.18em] text-white/35">Annotate</p>
-                  <p class="mt-2 text-lg font-semibold">Exact context</p>
-                  <p class="mt-2 text-sm leading-6 text-white/52">
-                    Pin comments as Question, Design, Bug, Copy, or Accessibility.
-                  </p>
-                </div>
-                <div class="rounded-2xl border border-white/10 bg-white/[.03] p-4">
-                  <p class="text-xs uppercase tracking-[.18em] text-white/35">Ship</p>
-                  <p class="mt-2 text-lg font-semibold">Clean handoff</p>
-                  <p class="mt-2 text-sm leading-6 text-white/52">
-                    Export Markdown, annotated PNGs, review packages, or agent-ready briefs.
-                  </p>
-                </div>
+              <div class="flex items-center gap-3">
+                <span id="trayIcon" class="flex h-5 items-center rounded-[5px] bg-sys-blue/25 px-1.5 ring-1 ring-sys-blue/50">
+                  <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 text-sys-blue" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/>
+                  </svg>
+                </span>
+                <svg viewBox="0 0 24 24" class="hidden h-3.5 w-3.5 sm:block" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                  <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><path d="M12 20h.01"/>
+                </svg>
+                <span class="hidden tabular-nums sm:inline">Fri 25 Jul 14:02</span>
               </div>
             </div>
 
-            <div class="glass rounded-[28px] p-6 sm:p-8">
-              <div class="flex items-center justify-between gap-3">
-                <p class="text-sm font-medium text-fuchsia-300">What you can capture</p>
-                <span class="text-[11px] text-white/35">Tap a type</span>
-              </div>
+            <!-- callout pointing at the tray icon -->
+            <div class="pointer-events-none absolute right-3 top-10 z-[5] hidden items-center gap-1.5 text-[11px] font-medium text-sys-blue md:flex">
+              <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 -scale-y-100 rotate-180" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>
+              </svg>
+              Pinstruct lives here
+            </div>
 
-              <div class="mt-5 flex flex-wrap gap-2" role="group" aria-label="Feedback category">
-                <button type="button" data-cat="question" aria-pressed="true" class="cat-chip rounded-full border border-cyan-300/40 bg-cyan-400/10 px-3.5 py-1.5 text-xs font-semibold text-cyan-200 transition">Question</button>
-                <button type="button" data-cat="design" aria-pressed="false" class="cat-chip rounded-full border border-white/10 bg-white/[.03] px-3.5 py-1.5 text-xs font-semibold text-white/55 transition hover:border-white/20 hover:text-white/80">Design</button>
-                <button type="button" data-cat="bug" aria-pressed="false" class="cat-chip rounded-full border border-white/10 bg-white/[.03] px-3.5 py-1.5 text-xs font-semibold text-white/55 transition hover:border-white/20 hover:text-white/80">Bug</button>
-                <button type="button" data-cat="copy" aria-pressed="false" class="cat-chip rounded-full border border-white/10 bg-white/[.03] px-3.5 py-1.5 text-xs font-semibold text-white/55 transition hover:border-white/20 hover:text-white/80">Copy</button>
-                <button type="button" data-cat="a11y" aria-pressed="false" class="cat-chip rounded-full border border-white/10 bg-white/[.03] px-3.5 py-1.5 text-xs font-semibold text-white/55 transition hover:border-white/20 hover:text-white/80">Accessibility</button>
-              </div>
+            <!-- frozen desktop -->
+            <div class="pointer-events-none absolute inset-0 top-8 bg-[radial-gradient(130%_110%_at_18%_0%,#182743_0%,#111119_52%,#0b0b10_100%)]">
+              <!-- captured window: mock analytics app -->
+              <div class="absolute left-1/2 top-[7%] h-[86%] w-[88%] -translate-x-1/2 overflow-hidden rounded-xl border border-white/10 bg-[#1b1b1f] shadow-[0_30px_80px_rgba(0,0,0,.55)]">
+                <!-- title bar -->
+                <div class="flex h-9 items-center gap-2 border-b border-white/[.06] bg-[#232327] px-3.5">
+                  <span class="h-3 w-3 rounded-full bg-[#FF5F57]"></span>
+                  <span class="h-3 w-3 rounded-full bg-[#FEBC2E]"></span>
+                  <span class="h-3 w-3 rounded-full bg-[#28C840]"></span>
+                  <span class="ml-3 truncate text-xs font-medium text-white/55">Lumen — Overview</span>
+                </div>
 
-              <div id="catPreview" class="mt-5 rounded-2xl border border-cyan-300/15 bg-cyan-400/[.05] p-4 transition-colors">
-                <div class="flex items-start gap-3">
-                  <span id="catBadge" class="review-type-badge shrink-0 border border-cyan-300/35 text-sm font-semibold text-cyan-200">?</span>
-                  <div>
-                    <p id="catLabel" class="text-sm font-semibold text-cyan-200">Question</p>
-                    <p id="catText" class="mt-1 text-sm text-white/70">Should this action be more prominent?</p>
+                <div class="flex h-[calc(100%-2.25rem)]">
+                  <!-- sidebar -->
+                  <div class="hidden w-36 shrink-0 flex-col gap-1 border-r border-white/[.06] bg-[#18181c] p-3 sm:flex">
+                    <div class="mb-3 flex items-center gap-2 px-1">
+                      <span class="h-4 w-4 rounded-md bg-gradient-to-br from-sys-blue to-sys-purple"></span>
+                      <span class="text-xs font-semibold text-white/80">Lumen</span>
+                    </div>
+                    <span class="rounded-md bg-white/[.08] px-2 py-1.5 text-[11px] font-medium text-white/85">Overview</span>
+                    <span class="px-2 py-1.5 text-[11px] text-white/40">Reports</span>
+                    <span class="px-2 py-1.5 text-[11px] text-white/40">Customers</span>
+                    <span class="px-2 py-1.5 text-[11px] text-white/40">Settings</span>
+                  </div>
+
+                  <!-- main -->
+                  <div class="flex min-w-0 flex-1 flex-col gap-3 p-3.5 sm:gap-4 sm:p-5">
+                    <div class="flex items-center justify-between gap-3">
+                      <p class="text-sm font-semibold text-white/90">Overview</p>
+                      <div class="flex items-center gap-2">
+                        <span class="hidden h-6 w-32 rounded-md border border-white/10 bg-white/[.04] sm:block"></span>
+                        <span class="rounded-md border border-white/15 px-2.5 py-1 text-[11px] font-medium text-white/35">Export</span>
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 sm:gap-3">
+                      <div class="rounded-lg border border-white/[.07] bg-white/[.03] p-2.5">
+                        <p class="text-[9px] uppercase tracking-wide text-white/35 sm:text-[10px]">Revenue</p>
+                        <p class="mt-1 text-xs font-semibold text-white/90 sm:text-sm">$48.2k</p>
+                        <p class="text-[9px] text-sys-green sm:text-[10px]">+12.4%</p>
+                      </div>
+                      <div class="rounded-lg border border-white/[.07] bg-white/[.03] p-2.5">
+                        <p class="text-[9px] uppercase tracking-wide text-white/35 sm:text-[10px]">Active users</p>
+                        <p class="mt-1 text-xs font-semibold text-white/90 sm:text-sm">8,904</p>
+                        <p class="text-[9px] text-sys-green sm:text-[10px]">+3.1%</p>
+                      </div>
+                      <div class="rounded-lg border border-white/[.07] bg-white/[.03] p-2.5">
+                        <p class="text-[9px] uppercase tracking-wide text-white/35 sm:text-[10px]">Churn</p>
+                        <p class="mt-1 text-xs font-semibold text-white/90 sm:text-sm">2.4%</p>
+                        <p class="text-[9px] text-sys-red sm:text-[10px]">+0.4%</p>
+                      </div>
+                    </div>
+
+                    <div class="min-h-0 flex-1 rounded-lg border border-white/[.07] bg-white/[.03] p-3">
+                      <p class="text-[10px] font-medium text-white/45">Monthly sessions</p>
+                      <div class="mt-2 flex h-[70%] min-h-12 items-end gap-1 sm:gap-1.5">
+                        <div class="w-full rounded-t-sm bg-white/10" style="height:38%"></div>
+                        <div class="w-full rounded-t-sm bg-white/10" style="height:52%"></div>
+                        <div class="w-full rounded-t-sm bg-white/10" style="height:44%"></div>
+                        <div class="w-full rounded-t-sm bg-white/10" style="height:60%"></div>
+                        <div class="w-full rounded-t-sm bg-sys-blue" style="height:92%"></div>
+                        <div class="w-full rounded-t-sm bg-white/10" style="height:56%"></div>
+                        <div class="w-full rounded-t-sm bg-white/10" style="height:64%"></div>
+                        <div class="w-full rounded-t-sm bg-white/10" style="height:50%"></div>
+                        <div class="w-full rounded-t-sm bg-white/10" style="height:70%"></div>
+                        <div class="w-full rounded-t-sm bg-white/10" style="height:58%"></div>
+                        <div class="w-full rounded-t-sm bg-white/10" style="height:76%"></div>
+                        <div class="w-full rounded-t-sm bg-white/10" style="height:66%"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            <!-- floating overlay toolbar (clone of the app's) -->
+            <div
+              id="overlayToolbar"
+              class="popover-panel absolute left-1/2 top-11 z-30 flex max-w-[calc(100%-1rem)] -translate-x-1/2 cursor-default items-center gap-1 rounded-xl px-1.5 py-1.5 sm:top-12 sm:px-2"
+            >
+              <div class="flex items-center gap-0.5 rounded-lg bg-white/[.08] p-0.5">
+                <span class="toolbar-btn inline-flex h-6 w-7" title="Selection tool (V)">
+                  <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 4 7.07 17 2.51-7.39L21 11.07z"/></svg>
+                </span>
+                <span class="toolbar-btn inline-flex h-6 w-7 rounded-md bg-white/20 text-white" title="Add pin tool (P)">
+                  <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                </span>
+              </div>
+
+              <span class="mx-0.5 hidden h-5 w-px bg-white/10 sm:block"></span>
+
+              <span class="toolbar-btn hidden sm:inline-flex" title="Trim the screenshot">
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>
+              </span>
+              <span class="toolbar-btn hidden sm:inline-flex" title="Undo" disabled>
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5 5.5 5.5 0 0 1-5.5 5.5H11"/></svg>
+              </span>
+              <span class="toolbar-btn hidden sm:inline-flex" title="Redo" disabled>
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5 5.5 5.5 0 0 0 9.5 20H13"/></svg>
+              </span>
+
+              <span class="mx-0.5 hidden h-5 w-px bg-white/10 md:block"></span>
+
+              <span class="toolbar-btn hidden md:inline-flex" title="Zoom out">
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M8 11h6"/></svg>
+              </span>
+              <span class="toolbar-btn hidden md:inline-flex" title="Zoom in">
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+              </span>
+
+              <span class="mx-0.5 h-5 w-px bg-white/10"></span>
+
+              <span id="pinCount" class="whitespace-nowrap px-1 text-xs tabular-nums text-white/50">2 pins</span>
+
+              <button id="resetDemoBtn" type="button" class="toolbar-btn inline-flex" title="Reset demo">
+                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+
+              <button
+                id="finishReviewBtn"
+                type="button"
+                class="ml-0.5 inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-sys-blue px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#2f96ff]"
+              >
+                <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Finish Review
+              </button>
+            </div>
+
+            <!-- hint -->
+            <div class="pointer-events-none absolute bottom-3 left-1/2 z-30 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/10 bg-black/55 px-3.5 py-1.5 text-[11px] text-white/65 backdrop-blur-md">
+              Live demo — click anywhere to pin feedback
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="border-y border-white/[.055] py-7">
-      <div class="marquee-mask overflow-hidden">
-        <div class="marquee-track flex items-center gap-4 whitespace-nowrap px-4 text-sm text-white/42">
-          <div class="flex items-center gap-4">
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">Websites</span>
-            <span class="text-white/15">✦</span>
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">Native apps</span>
-            <span class="text-white/15">✦</span>
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">Figma prototypes</span>
-            <span class="text-white/15">✦</span>
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">Localhost</span>
-            <span class="text-white/15">✦</span>
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">PDFs</span>
-            <span class="text-white/15">✦</span>
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">Presentations</span>
-            <span class="text-white/15">✦</span>
-          </div>
-          <div class="flex items-center gap-4" aria-hidden="true">
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">Websites</span>
-            <span class="text-white/15">✦</span>
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">Native apps</span>
-            <span class="text-white/15">✦</span>
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">Figma prototypes</span>
-            <span class="text-white/15">✦</span>
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">Localhost</span>
-            <span class="text-white/15">✦</span>
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">PDFs</span>
-            <span class="text-white/15">✦</span>
-            <span class="rounded-full border border-white/8 bg-white/[.03] px-4 py-2">Presentations</span>
-            <span class="text-white/15">✦</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="features" class="px-4 py-24 sm:px-8 sm:py-36">
-      <div class="mx-auto max-w-7xl">
+    <!-- ============================== FEATURES ============================== -->
+    <section id="features" class="relative px-4 py-20 sm:px-8 sm:py-32">
+      <div class="aurora right-[-10rem] top-[-6rem] h-[30rem] w-[30rem] bg-blue-600 opacity-[.16]"></div>
+      <div class="aurora aurora-two bottom-[-14rem] left-[-8rem] h-[26rem] w-[26rem] bg-violet-700 opacity-[.14]"></div>
+      <div class="relative mx-auto max-w-6xl">
         <div class="reveal max-w-3xl">
-          <p class="text-sm font-semibold uppercase tracking-[.2em] text-violet-300">Feedback without friction</p>
-          <h2 class="mt-4 text-4xl font-semibold tracking-[-.05em] sm:text-6xl">
-            Less explaining.<br />
-            <span class="text-white/42">More fixing.</span>
+          <p class="text-[13px] font-semibold uppercase tracking-[.18em] text-violet-300">Feedback without friction</p>
+          <h2 class="mt-4 text-3xl font-semibold tracking-[-.04em] sm:text-5xl">
+            Less explaining.
+            <span class="text-white/40">More fixing.</span>
           </h2>
-          <p class="mt-6 max-w-2xl text-base leading-7 text-white/53 sm:text-lg">
+          <p class="mt-5 max-w-2xl text-[15px] leading-7 text-white/55 sm:text-base">
             Pinstruct removes the gap between seeing a visual issue and giving someone enough context to solve it.
           </p>
         </div>
 
-        <div class="mt-14 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          <article class="feature-card glass reveal rounded-3xl p-7">
-            <div class="mb-12 flex h-11 w-11 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-400/10 text-cyan-300">
-              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true">
-                <path d="M5 4h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-4 3v-3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.6"/>
-                <path d="M8 9h8M8 13h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <div class="mt-12 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <article class="panel reveal rounded-2xl p-6">
+            <div class="mb-8 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[.06] text-white/80">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/><circle cx="12" cy="12" r="2.5"/>
               </svg>
             </div>
-            <h3 class="text-xl font-semibold tracking-[-.025em]">Review anything</h3>
-            <p class="mt-3 leading-7 text-white/50">
-              Use one global shortcut on websites, native apps, prototypes, PDFs, or anything else visible on your Mac.
+            <h3 class="text-lg font-semibold tracking-[-.02em]">Capture anything visible</h3>
+            <p class="mt-2.5 text-sm leading-6 text-white/50">
+              One global shortcut freezes websites, native apps, prototypes, PDFs — no browser extension, no account, no setup.
             </p>
           </article>
 
-          <article class="feature-card glass reveal rounded-3xl p-7">
-            <div class="mb-12 flex h-11 w-11 items-center justify-center rounded-2xl border border-orange-300/20 bg-orange-400/10 text-orange-300">
-              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true">
-                <circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="1.6"/>
-                <path d="M12 3v3M21 12h-3M12 21v-3M3 12h3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                <circle cx="12" cy="12" r="2" fill="currentColor"/>
+          <article class="panel reveal rounded-2xl p-6">
+            <div class="mb-8 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[.06] text-white/80">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>
               </svg>
             </div>
-            <h3 class="text-xl font-semibold tracking-[-.025em]">Pin the exact point</h3>
-            <p class="mt-3 leading-7 text-white/50">
-              Numbered annotations, categories, source context, and intelligent crops make every request unambiguous.
+            <h3 class="text-lg font-semibold tracking-[-.02em]">Pins that can't be misread</h3>
+            <p class="mt-2.5 text-sm leading-6 text-white/50">
+              Numbered, categorized, positioned to the pixel — with an automatic crop of the exact element per pin.
             </p>
           </article>
 
-          <article class="feature-card glass reveal rounded-3xl p-7">
-            <div class="mb-12 flex h-11 w-11 items-center justify-center rounded-2xl border border-fuchsia-300/20 bg-fuchsia-400/10 text-fuchsia-300">
-              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true">
-                <path d="M5 12h14M15 8l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M4 5h7M4 19h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".65"/>
+          <article class="panel reveal rounded-2xl p-6">
+            <div class="mb-8 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[.06] text-white/80">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m7 8-4 4 4 4"/><path d="m17 8 4 4-4 4"/><path d="m14 4-4 16"/>
               </svg>
             </div>
-            <h3 class="text-xl font-semibold tracking-[-.025em]">Hand it off cleanly</h3>
-            <p class="mt-3 leading-7 text-white/50">
-              Copy an agent-ready brief, Markdown, annotated PNG, or complete review package in one click.
+            <h3 class="text-lg font-semibold tracking-[-.02em]">Agent-ready by design</h3>
+            <p class="mt-2.5 text-sm leading-6 text-white/50">
+              "Copy for Agent" produces a structured brief — positions, crops, and an implementation request your coding agent understands.
             </p>
           </article>
 
-          <article class="feature-card glass reveal rounded-3xl p-7">
-            <div class="mb-12 flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-300/20 bg-emerald-400/10 text-emerald-300">
-              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true">
-                <path d="M6 7h12M6 12h12M6 17h7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                <rect x="3.5" y="4" width="17" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/>
+          <article class="panel reveal rounded-2xl p-6">
+            <div class="mb-8 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[.06] text-white/80">
+              <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
               </svg>
             </div>
-            <h3 class="text-xl font-semibold tracking-[-.025em]">Fits your workflow</h3>
-            <p class="mt-3 leading-7 text-white/50">
-              Export anywhere, and when needed, send a finished review straight into your code review flow.
+            <h3 class="text-lg font-semibold tracking-[-.02em]">Local-first, private</h3>
+            <p class="mt-2.5 text-sm leading-6 text-white/50">
+              Everything stays on your Mac. No cloud, no accounts, no telemetry. GitHub and Bitbucket PR posting is optional and per-user.
             </p>
           </article>
         </div>
       </div>
     </section>
 
-    <section id="workflow" class="relative overflow-hidden px-4 py-24 sm:px-8 sm:py-36">
+    <!-- ============================== WORKFLOW ============================== -->
+    <section id="workflow" class="relative border-t border-white/[.06] px-4 py-20 sm:px-8 sm:py-32">
       <div class="aurora left-[35%] top-[30%] h-[28rem] w-[28rem] bg-violet-700 opacity-20"></div>
-
       <div class="relative mx-auto max-w-6xl">
         <div class="reveal mx-auto max-w-3xl text-center">
-          <p class="text-sm font-semibold uppercase tracking-[.2em] text-blue-300">One focused workflow</p>
-          <h2 class="mt-4 text-4xl font-semibold tracking-[-.05em] sm:text-6xl">
-            Point. Instruct. Ship.
-          </h2>
+          <p class="text-[13px] font-semibold uppercase tracking-[.18em] text-blue-300">One focused workflow</p>
+          <h2 class="mt-4 text-3xl font-semibold tracking-[-.04em] sm:text-5xl">Point. Instruct. Ship.</h2>
         </div>
 
-        <div class="mt-16 space-y-14 md:mt-20 md:space-y-0">
-          <div class="relative grid gap-6 md:grid-cols-[110px_1fr] md:pb-20">
-            <div class="relative flex justify-center md:block">
-              <div class="number-orbit flex h-14 w-14 items-center justify-center rounded-full border border-blue-300/30 bg-blue-400/10 text-lg font-semibold text-blue-200">1</div>
-              <div class="flow-line hidden md:block"></div>
-            </div>
-            <div class="glass reveal rounded-3xl p-6 sm:p-9">
-              <div class="grid gap-8 lg:grid-cols-[1fr_.9fr] lg:items-center">
-                <div>
-                  <p class="text-sm font-medium text-blue-300">Point</p>
-                  <h3 class="mt-2 text-2xl font-semibold tracking-[-.035em] sm:text-3xl">Freeze the active window.</h3>
-                  <p class="mt-4 max-w-xl leading-7 text-white/52">
-                    Press your shortcut. Pinstruct captures exactly what you are reviewing without a browser extension, account, or setup flow.
-                  </p>
+        <div class="mt-14 space-y-5">
+          <!-- Step 1 -->
+          <div class="panel reveal rounded-2xl p-6 sm:p-9">
+            <div class="grid gap-8 lg:grid-cols-[1fr_.85fr] lg:items-center">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[.16em] text-blue-300">Step 1 · Point</p>
+                <h3 class="mt-2 text-2xl font-semibold tracking-[-.03em] sm:text-3xl">Freeze what you see.</h3>
+                <p class="mt-4 max-w-xl text-sm leading-7 text-white/55 sm:text-[15px]">
+                  Hit the shortcut and Pinstruct freezes your screen into a still you can annotate — the active window, the full display, or any image you drop on the menu-bar icon.
+                </p>
+              </div>
+              <div class="flex flex-col items-center gap-5 rounded-xl border border-white/[.07] bg-black/25 p-6 sm:p-8">
+                <div class="flex items-center gap-2">
+                  <span class="keycap !h-11 !min-w-11 !text-lg">⌃</span>
+                  <span class="keycap !h-11 !min-w-11 !text-lg">⇧</span>
+                  <span class="keycap !h-11 !min-w-11 !text-lg">R</span>
                 </div>
-                <div class="rounded-2xl border border-white/8 bg-black/30 p-4">
-                  <div class="flex items-center gap-2 border-b border-white/7 pb-3">
-                    <span class="h-2.5 w-2.5 rounded-full bg-red-400/80"></span>
-                    <span class="h-2.5 w-2.5 rounded-full bg-yellow-400/80"></span>
-                    <span class="h-2.5 w-2.5 rounded-full bg-green-400/80"></span>
-                  </div>
-                  <div class="mt-4 h-32 rounded-xl bg-[radial-gradient(circle_at_62%_40%,rgba(68,154,255,.32),transparent_24%),linear-gradient(135deg,#15172c,#090914)] p-4">
-                    <div class="h-3 w-24 rounded-full bg-white/17"></div>
-                    <div class="mt-3 h-2 w-40 rounded-full bg-white/8"></div>
-                    <div class="mt-7 h-9 w-24 rounded-lg bg-blue-500/60"></div>
+                <div class="flex flex-wrap justify-center gap-2 text-[11px] text-white/50">
+                  <span class="rounded-full border border-white/10 bg-white/[.04] px-3 py-1.5">Active window</span>
+                  <span class="rounded-full border border-white/10 bg-white/[.04] px-3 py-1.5">Full display</span>
+                  <span class="rounded-full border border-white/10 bg-white/[.04] px-3 py-1.5">Import image</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="panel reveal rounded-2xl p-6 sm:p-9">
+            <div class="grid gap-8 lg:grid-cols-[1fr_.85fr] lg:items-start">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[.16em] text-orange-300">Step 2 · Instruct</p>
+                <h3 class="mt-2 text-2xl font-semibold tracking-[-.03em] sm:text-3xl">Five kinds of feedback.</h3>
+                <p class="mt-4 max-w-xl text-sm leading-7 text-white/55 sm:text-[15px]">
+                  Every pin carries a category, so whoever receives the review knows instantly what kind of change you mean. Switch with <span class="keycap keycap-sm">⌘</span><span class="keycap keycap-sm">1</span>–<span class="keycap keycap-sm">5</span> without leaving the keyboard.
+                </p>
+
+                <div id="catChips" class="mt-6 flex flex-wrap gap-2" role="group" aria-label="Feedback category"></div>
+              </div>
+
+              <div id="catPreview" class="rounded-xl border p-5 transition-colors duration-200">
+                <div class="flex items-start gap-3.5">
+                  <span id="catBadge" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white shadow-[0_0_0_2px_#fff,0_2px_6px_rgba(0,0,0,.4)]"></span>
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                      <p id="catLabel" class="text-sm font-semibold"></p>
+                      <span id="catKey" class="keycap keycap-sm"></span>
+                    </div>
+                    <p id="catText" class="mt-1.5 text-sm leading-6 text-white/70"></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="relative grid gap-6 md:grid-cols-[110px_1fr] md:pb-20">
-            <div class="relative flex justify-center md:block">
-              <div class="number-orbit flex h-14 w-14 items-center justify-center rounded-full border border-orange-300/30 bg-orange-400/10 text-lg font-semibold text-orange-200">2</div>
-              <div class="flow-line hidden md:block"></div>
-            </div>
-            <div class="glass reveal rounded-3xl p-6 sm:p-9">
-              <div class="grid gap-8 lg:grid-cols-[1fr_.9fr] lg:items-start">
-                <div>
-                  <p class="text-sm font-medium text-orange-300">Instruct</p>
-                  <h3 class="mt-2 text-2xl font-semibold tracking-[-.035em] sm:text-3xl">Capture every kind of feedback.</h3>
-                  <p class="mt-4 max-w-xl leading-7 text-white/52">
-                    Add comments in the category that fits best so the person receiving the review instantly understands the type of change you mean.
-                  </p>
+          <!-- Step 3 -->
+          <div class="panel reveal overflow-hidden rounded-2xl">
+            <div class="grid lg:grid-cols-[1fr_1.05fr]">
+              <div class="p-6 sm:p-9">
+                <p class="text-xs font-semibold uppercase tracking-[.16em] text-fuchsia-300">Step 3 · Ship</p>
+                <h3 class="mt-2 text-2xl font-semibold tracking-[-.03em] sm:text-3xl">Hand off a brief, not a screenshot.</h3>
+                <p class="mt-4 max-w-xl text-sm leading-7 text-white/55 sm:text-[15px]">
+                  Copy an agent-ready brief, export Markdown with annotated images and per-pin crops, or post the whole review to a GitHub or Bitbucket pull request.
+                </p>
+
+                <div class="mt-6 flex flex-wrap gap-2 text-xs text-white/65">
+                  <span class="rounded-full border border-white/10 bg-white/[.04] px-3.5 py-1.5">Copy for Agent</span>
+                  <span class="rounded-full border border-white/10 bg-white/[.04] px-3.5 py-1.5">Markdown</span>
+                  <span class="rounded-full border border-white/10 bg-white/[.04] px-3.5 py-1.5">Annotated PNG</span>
+                  <span class="rounded-full border border-white/10 bg-white/[.04] px-3.5 py-1.5">Export package</span>
+                  <a href="#integrations" class="rounded-full border border-sys-blue/40 bg-sys-blue/10 px-3.5 py-1.5 font-semibold text-white transition hover:bg-sys-blue/20">GitHub / Bitbucket PR ↓</a>
                 </div>
-                <div class="grid gap-3 sm:grid-cols-2">
-                  <div class="review-type rounded-2xl p-4">
-                    <div class="flex items-start gap-3">
-                      <span class="review-type-badge shrink-0 border border-cyan-300/35 text-sm font-semibold text-cyan-200">?</span>
-                      <div>
-                        <p class="text-xs font-medium text-cyan-300">Question</p>
-                        <p class="mt-1 text-sm text-white/72">Should this action be more prominent?</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="review-type rounded-2xl p-4">
-                    <div class="flex items-start gap-3">
-                      <span class="review-type-badge shrink-0 border border-orange-300/35 text-sm font-semibold text-orange-200">D</span>
-                      <div>
-                        <p class="text-xs font-medium text-orange-300">Design</p>
-                        <p class="mt-1 text-sm text-white/72">Make the primary button stronger.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="review-type rounded-2xl p-4">
-                    <div class="flex items-start gap-3">
-                      <span class="review-type-badge shrink-0 border border-fuchsia-300/35 text-sm font-semibold text-fuchsia-200">!</span>
-                      <div>
-                        <p class="text-xs font-medium text-fuchsia-300">Bug</p>
-                        <p class="mt-1 text-sm text-white/72">Text wraps incorrectly on smaller widths.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="review-type rounded-2xl p-4">
-                    <div class="flex items-start gap-3">
-                      <span class="review-type-badge shrink-0 border border-emerald-300/35 text-sm font-semibold text-emerald-200">T</span>
-                      <div>
-                        <p class="text-xs font-medium text-emerald-300">Copy</p>
-                        <p class="mt-1 text-sm text-white/72">Change "Submit" to "Save changes".</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="review-type rounded-2xl p-4 sm:col-span-2">
-                    <div class="flex items-start gap-3">
-                      <span class="review-type-badge shrink-0 border border-violet-300/35 text-sm font-semibold text-violet-200">A</span>
-                      <div>
-                        <p class="text-xs font-medium text-violet-300">Accessibility</p>
-                        <p class="mt-1 text-sm text-white/72">Increase chart-label contrast and improve readability.</p>
-                      </div>
-                    </div>
-                  </div>
+
+                <button
+                  id="previewExportBtn"
+                  type="button"
+                  class="mt-7 inline-flex items-center gap-2 rounded-xl bg-sys-blue px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2f96ff]"
+                >
+                  Preview your export
+                  <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true">
+                    <path d="M4 10h11M11 6l4 4-4 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                <p class="mt-2.5 text-[11px] text-white/35">Generated live from the pins you placed in the demo above.</p>
+              </div>
+
+              <div class="border-t border-white/[.07] bg-black/30 p-6 sm:p-9 lg:border-l lg:border-t-0">
+                <div class="flex items-center justify-between">
+                  <p class="text-[11px] font-medium uppercase tracking-[.14em] text-white/35">Copy for Agent</p>
+                  <span class="rounded-full border border-sys-green/25 bg-sys-green/10 px-2.5 py-0.5 text-[10px] font-medium text-sys-green">exact output</span>
                 </div>
+                <pre id="staticBrief" class="mono mt-4 max-h-80 overflow-auto whitespace-pre-wrap break-words text-[12px] leading-[1.7] text-white/70"></pre>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
 
-          <div class="relative grid gap-6 md:grid-cols-[110px_1fr]">
-            <div class="relative flex justify-center md:block">
-              <div class="number-orbit flex h-14 w-14 items-center justify-center rounded-full border border-fuchsia-300/30 bg-fuchsia-400/10 text-lg font-semibold text-fuchsia-200">3</div>
+    <!-- ============================== INTEGRATIONS ============================== -->
+    <section id="integrations" class="relative border-t border-white/[.06] px-4 py-20 sm:px-8 sm:py-32">
+      <div class="aurora right-[-10rem] top-[10%] h-[26rem] w-[26rem] bg-emerald-600 opacity-[.12]"></div>
+      <div class="aurora aurora-two left-[-10rem] bottom-[-10rem] h-[26rem] w-[26rem] bg-blue-600 opacity-[.14]"></div>
+
+      <div class="relative mx-auto max-w-6xl">
+        <div class="reveal grid gap-10 lg:grid-cols-[.95fr_1.05fr] lg:items-start">
+          <div class="lg:sticky lg:top-28">
+            <p class="text-[13px] font-semibold uppercase tracking-[.18em] text-emerald-300">Integrations</p>
+            <h2 class="mt-4 text-3xl font-semibold tracking-[-.04em] sm:text-5xl">
+              Your review,<br />
+              <span class="text-white/40">posted as a PR comment.</span>
+            </h2>
+            <p class="mt-5 max-w-xl text-[15px] leading-7 text-white/55 sm:text-base">
+              Connect GitHub or Bitbucket with a personal token — it never leaves your Mac. Pinstruct uploads the annotated screenshot plus a marked crop per pin, and posts everything as one comment on the pull request you pick.
+            </p>
+
+            <div class="mt-7 flex gap-2" role="tablist" aria-label="Git provider">
+              <button type="button" id="ghTab" data-provider="github" class="pr-tab inline-flex items-center gap-2.5 rounded-xl border px-5 py-3 text-sm font-semibold transition" aria-selected="true">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                  <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                </svg>
+                GitHub
+              </button>
+              <button type="button" id="bbTab" data-provider="bitbucket" class="pr-tab inline-flex items-center gap-2.5 rounded-xl border px-5 py-3 text-sm font-semibold transition" aria-selected="false">
+                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+                  <path d="M.778 1.213a.768.768 0 0 0-.768.892l3.263 19.81c.084.5.515.868 1.022.873H19.95a.772.772 0 0 0 .77-.646l3.27-20.03a.768.768 0 0 0-.768-.891zM14.52 15.53H9.522L8.17 8.466h7.561z"/>
+                </svg>
+                Bitbucket
+              </button>
             </div>
-            <div class="glass reveal overflow-hidden rounded-3xl p-0">
-              <div class="grid gap-0 lg:grid-cols-[1.05fr_.95fr]">
-                <div class="p-6 sm:p-9">
-                  <p class="text-sm font-medium text-fuchsia-300">Ship</p>
-                  <h3 class="mt-2 text-2xl font-semibold tracking-[-.035em] sm:text-3xl">Share the finished review anywhere work happens.</h3>
-                  <p class="mt-4 max-w-xl leading-7 text-white/52">
-                    Copy an agent-ready brief, export Markdown and annotated images, or post the finished review straight into your code review flow when you want to keep everything in one place.
-                  </p>
 
-                  <div class="mt-7 flex flex-wrap gap-3 text-sm text-white/72">
-                    <div class="rounded-full border border-white/10 bg-white/[.045] px-4 py-2">Markdown</div>
-                    <div class="rounded-full border border-white/10 bg-white/[.045] px-4 py-2">Annotated PNG</div>
-                    <div class="rounded-full border border-white/10 bg-white/[.045] px-4 py-2">Copy for Agent</div>
-                    <div class="rounded-full border border-white/10 bg-white/[.045] px-4 py-2">PR handoff</div>
+            <ul class="mt-7 space-y-2.5 text-sm text-white/50">
+              <li class="flex items-start gap-2.5">
+                <svg viewBox="0 0 24 24" class="mt-0.5 h-4 w-4 shrink-0 text-sys-green" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                One comment per review — annotated overview plus a zoomed crop for every pin.
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg viewBox="0 0 24 24" class="mt-0.5 h-4 w-4 shrink-0 text-sys-green" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Pick workspace, repository, and pull request right from the export menu.
+              </li>
+              <li class="flex items-start gap-2.5">
+                <svg viewBox="0 0 24 24" class="mt-0.5 h-4 w-4 shrink-0 text-sys-green" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                Token stored encrypted on-device. Pinstruct never approves or merges.
+              </li>
+            </ul>
+          </div>
+
+          <!-- PR page wireframe -->
+          <div id="prFrame" class="reveal overflow-hidden rounded-2xl border shadow-[0_30px_90px_rgba(0,0,0,.5)]">
+            <div id="prFrameTop" class="border-b px-4 pt-4 sm:px-5"></div>
+
+            <div class="p-3 sm:p-5">
+              <p id="prFrameLabel" class="mb-3 hidden text-xs font-semibold text-white/60"></p>
+              <div id="prMock" class="overflow-hidden rounded-xl border">
+                <div id="prMockHeader" class="flex items-center gap-3 border-b px-4 py-3"></div>
+
+            <div class="space-y-4 p-4 text-[13px] leading-6 sm:p-5" id="prMockBody">
+              <p class="text-[15px] font-semibold">📍 Lumen — Overview</p>
+
+              <div class="space-y-0.5 text-white/60">
+                <p>• Window: Lumen — Overview</p>
+                <p>• Capture size: 2880 x 1800</p>
+              </div>
+
+              <!-- annotated.png -->
+              <div class="relative overflow-hidden rounded-lg border border-white/10 bg-[radial-gradient(120%_100%_at_20%_0%,#182743_0%,#101019_60%)] p-3">
+                <div class="rounded-md border border-white/10 bg-[#1b1b1f] p-2.5">
+                  <div class="flex items-center gap-1.5">
+                    <span class="h-1.5 w-1.5 rounded-full bg-[#FF5F57]"></span>
+                    <span class="h-1.5 w-1.5 rounded-full bg-[#FEBC2E]"></span>
+                    <span class="h-1.5 w-1.5 rounded-full bg-[#28C840]"></span>
+                  </div>
+                  <div class="mt-2 flex items-center justify-between">
+                    <span class="h-2 w-16 rounded-full bg-white/15"></span>
+                    <span class="rounded border border-white/15 px-1.5 py-0.5 text-[8px] text-white/35">Export</span>
+                  </div>
+                  <div class="mt-2 flex h-14 items-end gap-1">
+                    <span class="w-full rounded-t-sm bg-white/10" style="height:40%"></span>
+                    <span class="w-full rounded-t-sm bg-white/10" style="height:55%"></span>
+                    <span class="w-full rounded-t-sm bg-white/10" style="height:45%"></span>
+                    <span class="w-full rounded-t-sm bg-sys-blue" style="height:90%"></span>
+                    <span class="w-full rounded-t-sm bg-white/10" style="height:60%"></span>
+                    <span class="w-full rounded-t-sm bg-white/10" style="height:70%"></span>
+                    <span class="w-full rounded-t-sm bg-white/10" style="height:52%"></span>
                   </div>
                 </div>
+                <span class="absolute right-[13%] top-[30%] flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold text-white" style="background:#0A84FF;box-shadow:0 0 0 1.5px #fff,0 1px 4px rgba(0,0,0,.4)">1</span>
+                <span class="absolute left-[46%] top-[62%] flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-semibold text-white" style="background:#FF9F0A;box-shadow:0 0 0 1.5px #fff,0 1px 4px rgba(0,0,0,.4)">2</span>
+              </div>
 
-                <div class="relative border-t border-white/8 bg-[radial-gradient(circle_at_top_left,rgba(91,171,255,.16),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(255,130,72,.14),transparent_36%),linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01))] p-6 sm:p-9 lg:border-l lg:border-t-0">
-                  <div class="glass rounded-3xl p-5">
-                    <div class="flex items-center justify-between gap-4">
-                      <div>
-                        <p class="text-xs uppercase tracking-[.18em] text-white/35">Review destination</p>
-                        <h4 class="mt-2 text-lg font-semibold tracking-[-.025em]">Pick a handoff</h4>
-                      </div>
-                      <span class="rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-300">Ready</span>
-                    </div>
+              <hr class="border-white/10" />
 
-                    <div class="mt-5 space-y-3">
-                      <div class="rounded-2xl border border-white/10 bg-white/[.03] p-4">
-                        <p class="text-xs text-white/38">Option 1</p>
-                        <p class="mt-2 font-medium">Copy for Agent</p>
-                        <p class="mt-1 text-sm text-white/52">Send the full visual context to your coding assistant.</p>
-                      </div>
+              <div>
+                <p class="font-bold">1. Design</p>
+                <p class="mt-1 text-white/70">The Export button is nearly invisible — use the filled accent style.</p>
+                <!-- crop with ring + badge marker -->
+                <div class="relative mt-2.5 inline-flex items-center justify-center rounded-lg border border-white/10 bg-[#1b1b1f] px-10 py-6">
+                  <span class="rounded border border-white/20 px-3 py-1.5 text-[11px] text-white/40">Export</span>
+                  <span class="pointer-events-none absolute h-11 w-11 rounded-full" style="border:2.5px solid #0A84FF"></span>
+                  <span class="absolute right-4 top-1.5 flex w-5 items-center justify-center rounded-full text-[9px] font-semibold text-white" style="background:#0A84FF;height:1.25rem;box-shadow:0 0 0 1.5px #fff">1</span>
+                </div>
+              </div>
 
-                      <div class="rounded-2xl border border-white/10 bg-white/[.03] p-4">
-                        <p class="text-xs text-white/38">Option 2</p>
-                        <p class="mt-2 font-medium">Export package</p>
-                        <p class="mt-1 text-sm text-white/52">Generate Markdown, crops, and an annotated screenshot.</p>
-                      </div>
+              <div>
+                <p class="font-bold">2. Question</p>
+                <p class="mt-1 text-white/70">Is the May spike real usage or a tracking gap?</p>
+              </div>
 
-                      <div class="rounded-2xl border border-white/10 bg-white/[.03] p-4">
-                        <p class="text-xs text-white/38">Option 3</p>
-                        <p class="mt-2 font-medium">Post into a pull request</p>
-                        <p class="mt-1 text-sm text-white/52">Keep feedback attached to the review thread when that fits your flow.</p>
-                      </div>
-                    </div>
-
-                    <div class="mt-5 flex flex-col gap-3 sm:flex-row">
-                      <button class="shine-button rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-black">
-                        Finish review
-                      </button>
-                      <button class="rounded-2xl border border-white/10 bg-white/[.035] px-4 py-3 text-sm font-semibold text-white/75">
-                        Preview export
-                      </button>
-                    </div>
-                  </div>
+                  <hr class="border-white/10" />
+                  <p class="italic text-white/40">Posted from Pinstruct.</p>
                 </div>
               </div>
             </div>
@@ -758,79 +799,95 @@
       </div>
     </section>
 
-    <section id="built-for" class="px-4 py-24 sm:px-8 sm:py-36">
-      <div class="mx-auto max-w-7xl">
-        <div class="reveal grid gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-end">
+    <!-- ============================== BUILT FOR ============================== -->
+    <section id="built-for" class="relative border-t border-white/[.06] px-4 py-20 sm:px-8 sm:py-32">
+      <div class="aurora left-[-10rem] top-[20%] h-[28rem] w-[28rem] bg-fuchsia-700 opacity-[.15]"></div>
+      <div class="aurora aurora-two right-[-8rem] bottom-[-12rem] h-[24rem] w-[24rem] bg-blue-700 opacity-[.14]"></div>
+      <div class="relative mx-auto max-w-6xl">
+        <div class="reveal grid gap-10 lg:grid-cols-[.9fr_1.1fr] lg:items-end">
           <div>
-            <p class="text-sm font-semibold uppercase tracking-[.2em] text-fuchsia-300">Made for product work</p>
-            <h2 class="mt-4 text-4xl font-semibold tracking-[-.05em] sm:text-6xl">
+            <p class="text-[13px] font-semibold uppercase tracking-[.18em] text-fuchsia-300">Made for product work</p>
+            <h2 class="mt-4 text-3xl font-semibold tracking-[-.04em] sm:text-5xl">
               One review layer.<br />
-              <span class="text-white/42">Every visible product.</span>
+              <span class="text-white/40">Every visible product.</span>
             </h2>
           </div>
-          <p class="max-w-2xl text-base leading-7 text-white/53 sm:text-lg">
-            Pinstruct is small enough to stay out of the way and structured enough to replace rambling screenshots, vague Slack messages, and disconnected QA notes.
+          <p class="max-w-2xl text-[15px] leading-7 text-white/55 sm:text-base">
+            Small enough to stay out of the way, structured enough to replace rambling screenshots, vague Slack messages, and disconnected QA notes.
           </p>
         </div>
 
-        <div class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          <div class="glass reveal rounded-3xl p-6">
-            <p class="text-sm text-blue-300">Designers</p>
-            <p class="mt-3 text-lg font-semibold">Give visual direction without rebuilding the context.</p>
+        <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="panel reveal rounded-2xl p-6">
+            <span class="inline-block h-2 w-2 rounded-full bg-sys-blue"></span>
+            <p class="mt-3 text-sm text-white/45">Designers</p>
+            <p class="mt-2 text-[15px] font-semibold leading-6">Give visual direction without rebuilding the context.</p>
           </div>
-          <div class="glass reveal rounded-3xl p-6">
-            <p class="text-sm text-orange-300">Developers</p>
-            <p class="mt-3 text-lg font-semibold">Receive requests tied to the exact screen and position.</p>
+          <div class="panel reveal rounded-2xl p-6">
+            <span class="inline-block h-2 w-2 rounded-full bg-sys-purple"></span>
+            <p class="mt-3 text-sm text-white/45">Developers</p>
+            <p class="mt-2 text-[15px] font-semibold leading-6">Receive requests tied to the exact screen and position.</p>
           </div>
-          <div class="glass reveal rounded-3xl p-6">
-            <p class="text-sm text-fuchsia-300">QA teams</p>
-            <p class="mt-3 text-lg font-semibold">Capture visible bugs quickly and consistently.</p>
+          <div class="panel reveal rounded-2xl p-6">
+            <span class="inline-block h-2 w-2 rounded-full bg-sys-red"></span>
+            <p class="mt-3 text-sm text-white/45">QA teams</p>
+            <p class="mt-2 text-[15px] font-semibold leading-6">Capture visible bugs quickly and consistently.</p>
           </div>
-          <div class="glass reveal rounded-3xl p-6">
-            <p class="text-sm text-cyan-300">Coding agents</p>
-            <p class="mt-3 text-lg font-semibold">Get structured visual context ready to implement.</p>
+          <div class="panel reveal rounded-2xl p-6">
+            <span class="inline-block h-2 w-2 rounded-full bg-sys-green"></span>
+            <p class="mt-3 text-sm text-white/45">Coding agents</p>
+            <p class="mt-2 text-[15px] font-semibold leading-6">Get structured visual context ready to implement.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="download" class="px-4 pb-20 pt-16 sm:px-8 sm:pb-28">
-      <div class="reveal relative mx-auto max-w-6xl overflow-hidden rounded-[28px] border border-white/10 bg-[#0d0c19] px-5 py-14 text-center shadow-glow sm:px-12 sm:py-24 sm:rounded-[32px]">
+    <!-- ============================== DOWNLOAD ============================== -->
+    <section id="download" class="px-4 pb-20 pt-8 sm:px-8 sm:pb-28 sm:pt-12">
+      <div class="panel reveal relative mx-auto max-w-6xl overflow-hidden rounded-3xl px-5 py-14 text-center sm:px-12 sm:py-20">
         <div class="aurora left-[10%] top-[-18rem] h-[30rem] w-[30rem] bg-blue-600 opacity-25"></div>
         <div class="aurora aurora-two bottom-[-18rem] right-[5%] h-[30rem] w-[30rem] bg-orange-500 opacity-20"></div>
-        <div class="grid-bg absolute inset-0 opacity-50"></div>
+        <div class="grid-bg opacity-50"></div>
 
         <div class="relative">
           <img
             src="assets/logo.webp"
             alt="Pinstruct app icon"
-            class="mx-auto h-24 w-24 rounded-[25px] shadow-[0_20px_70px_rgba(119,78,255,.35)] sm:h-28 sm:w-28"
+            class="mx-auto h-24 w-24 rounded-[25px] shadow-[0_20px_60px_rgba(10,132,255,.25)] sm:h-28 sm:w-28"
           />
-          <h2 class="mt-8 text-4xl font-semibold tracking-[-.055em] sm:text-6xl">
+          <h2 class="mt-8 text-3xl font-semibold tracking-[-.045em] sm:text-5xl">
             See it. Pin it. Ship it.
           </h2>
-          <p class="mx-auto mt-5 max-w-xl text-base leading-7 text-white/53 sm:text-lg">
-            Bring precise, implementation-ready visual feedback to everything on your Mac, with exports and handoffs that fit naturally into real product work.
+          <p class="mx-auto mt-5 max-w-xl text-[15px] leading-7 text-white/55 sm:text-base">
+            Precise, implementation-ready visual feedback for everything on your Mac — with handoffs that fit naturally into real product work.
           </p>
 
-          <div class="mt-9 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+          <div class="mt-9 flex flex-col items-center justify-center gap-3">
             <a
               href="https://www.glaze.app/app/pinstruct-WxB8jL"
               target="_blank"
               rel="noopener noreferrer"
-              class="shine-button inline-flex w-full items-center justify-center rounded-2xl bg-white px-6 py-3.5 text-sm font-semibold text-black transition hover:-translate-y-0.5 sm:w-auto sm:min-w-48"
+              class="inline-flex w-full items-center justify-center rounded-xl bg-sys-blue px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-[#2f96ff] sm:w-auto sm:min-w-52"
             >
               Get Pinstruct on Glaze
             </a>
-            <span class="text-xs text-white/35">macOS · Apple silicon</span>
+            <span class="text-xs text-white/40">macOS · Apple silicon</span>
+          </div>
+
+          <div class="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] text-white/35 sm:text-xs">
+            <span>Local-first</span>
+            <span class="h-1 w-1 rounded-full bg-white/20"></span>
+            <span>No accounts</span>
+            <span class="h-1 w-1 rounded-full bg-white/20"></span>
+            <span>No telemetry</span>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="border-t border-white/[.055] px-4 py-8 sm:px-8">
-    <div class="mx-auto flex max-w-7xl flex-col gap-5 text-sm text-white/36 sm:flex-row sm:items-center sm:justify-between">
+  <footer class="border-t border-white/[.06] px-4 py-8 sm:px-8">
+    <div class="mx-auto flex max-w-6xl flex-col gap-5 text-sm text-white/35 sm:flex-row sm:items-center sm:justify-between">
       <div class="flex items-center gap-3">
         <img src="assets/logo.webp" alt="" class="h-8 w-8 rounded-[10px]" />
         <span>Pinstruct</span>
@@ -840,12 +897,39 @@
     </div>
   </footer>
 
+  <!-- ============================== EXPORT MODAL ============================== -->
+  <div id="exportModal" class="fixed inset-0 z-[90] hidden items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
+    <div role="dialog" aria-modal="true" aria-labelledby="exportModalTitle" class="popover-panel relative w-full max-w-2xl rounded-2xl p-6 sm:p-8">
+      <button id="exportModalClose" type="button" aria-label="Close" class="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-white/10 text-white/60 transition hover:border-white/25 hover:text-white">
+        <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" aria-hidden="true">
+          <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <h3 id="exportModalTitle" class="text-xl font-semibold tracking-[-.02em]">Review export</h3>
+      <p class="mt-1 text-sm text-white/50">The same output the app generates — built from your pins in the demo.</p>
+
+      <div class="mt-5 flex flex-wrap gap-2" role="tablist" aria-label="Export format">
+        <button type="button" data-tab="agent" role="tab" class="export-tab" aria-selected="true">Copy for Agent</button>
+        <button type="button" data-tab="markdown" role="tab" class="export-tab" aria-selected="false">Markdown</button>
+        <button type="button" data-tab="plain" role="tab" class="export-tab" aria-selected="false">Plain list</button>
+      </div>
+
+      <pre id="exportOutput" class="mono mt-4 max-h-72 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-white/10 bg-black/40 p-4 text-[12px] leading-[1.7] text-white/75"></pre>
+
+      <div class="mt-5 flex items-center gap-3">
+        <button id="exportCopyBtn" type="button" class="rounded-xl bg-sys-blue px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#2f96ff]">Copy</button>
+        <span id="exportCopiedHint" class="text-xs text-sys-green opacity-0 transition-opacity">Copied</span>
+      </div>
+    </div>
+  </div>
+
   <script>
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     document.getElementById("year").textContent = new Date().getFullYear();
 
+    /* ---------- scroll reveal ---------- */
     const revealElements = document.querySelectorAll(".reveal");
-
     if (reducedMotion) {
       revealElements.forEach((element) => element.classList.add("visible"));
     } else {
@@ -859,116 +943,552 @@
         },
         { threshold: 0.12 }
       );
-
       revealElements.forEach((element, index) => {
-        element.style.transitionDelay = `${Math.min(index % 4, 3) * 70}ms`;
+        element.style.transitionDelay = `${Math.min(index % 4, 3) * 60}ms`;
         observer.observe(element);
       });
     }
 
-    const cursorGlow = document.getElementById("cursorGlow");
-
-    if (!reducedMotion && window.matchMedia("(pointer: fine)").matches) {
-      window.addEventListener(
-        "pointermove",
-        (event) => {
-          document.documentElement.style.setProperty("--mouse-x", `${event.clientX}px`);
-          document.documentElement.style.setProperty("--mouse-y", `${event.clientY}px`);
-          cursorGlow.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
-        },
-        { passive: true }
-      );
-
-      document.querySelectorAll(".feature-card").forEach((card) => {
-        card.addEventListener("pointermove", (event) => {
-          const rect = card.getBoundingClientRect();
-          const x = (event.clientX - rect.left) / rect.width - 0.5;
-          const y = (event.clientY - rect.top) / rect.height - 0.5;
-          card.style.transform = `perspective(900px) rotateX(${-y * 5}deg) rotateY(${x * 6}deg) translateY(-2px)`;
-        });
-
-        card.addEventListener("pointerleave", () => {
-          card.style.transform = "";
-        });
-      });
-    }
-
-    const CHIP_BASE = "cat-chip rounded-full border px-3.5 py-1.5 text-xs font-semibold transition";
-    const CHIP_INACTIVE = "border-white/10 bg-white/[.03] text-white/55 hover:border-white/20 hover:text-white/80";
-
-    const CATEGORIES = {
-      question: {
-        chip: "border-cyan-300/40 bg-cyan-400/10 text-cyan-200",
-        preview: "border-cyan-300/15 bg-cyan-400/[.05]",
-        badge: "border-cyan-300/35 text-cyan-200",
-        label: "text-cyan-200",
-        glyph: "?",
-        name: "Question",
-        text: "Should this action be more prominent?",
-      },
-      design: {
-        chip: "border-orange-300/40 bg-orange-400/10 text-orange-200",
-        preview: "border-orange-300/15 bg-orange-400/[.05]",
-        badge: "border-orange-300/35 text-orange-200",
-        label: "text-orange-200",
-        glyph: "D",
-        name: "Design",
-        text: "Make the primary button stronger.",
-      },
-      bug: {
-        chip: "border-fuchsia-300/40 bg-fuchsia-400/10 text-fuchsia-200",
-        preview: "border-fuchsia-300/15 bg-fuchsia-400/[.05]",
-        badge: "border-fuchsia-300/35 text-fuchsia-200",
-        label: "text-fuchsia-200",
-        glyph: "!",
-        name: "Bug",
-        text: "Text wraps incorrectly on smaller widths.",
-      },
-      copy: {
-        chip: "border-emerald-300/40 bg-emerald-400/10 text-emerald-200",
-        preview: "border-emerald-300/15 bg-emerald-400/[.05]",
-        badge: "border-emerald-300/35 text-emerald-200",
-        label: "text-emerald-200",
-        glyph: "T",
-        name: "Copy",
-        text: 'Change "Submit" to "Save changes".',
-      },
-      a11y: {
-        chip: "border-violet-300/40 bg-violet-400/10 text-violet-200",
-        preview: "border-violet-300/15 bg-violet-400/[.05]",
-        badge: "border-violet-300/35 text-violet-200",
-        label: "text-violet-200",
-        glyph: "A",
-        name: "Accessibility",
-        text: "Increase chart-label contrast and improve readability.",
-      },
+    /* ---------- category metadata (colors, order, shortcuts = the real app's) ---------- */
+    const ICONS = {
+      design: '<circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>',
+      bug: '<path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/>',
+      copy: '<polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/>',
+      a11y: '<circle cx="16" cy="4" r="1"/><path d="m18 19 1-7-6 1"/><path d="m5 8 3-3 5.5 3-2.36 3.5"/><path d="M4.24 14.5a5 5 0 0 0 6.88 6"/><path d="M13.76 17.5a5 5 0 0 0-6.88-6"/>',
+      question: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
     };
 
-    const catChips = document.querySelectorAll(".cat-chip");
+    function catIcon(cat, cls) {
+      return `<svg viewBox="0 0 24 24" class="${cls}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[cat]}</svg>`;
+    }
+
+    const CATS = {
+      design: { name: "Design", color: "#0A84FF", key: "⌘1", sample: "Make the Export button the filled accent style — it disappears on dark." },
+      bug: { name: "Bug", color: "#FF453A", key: "⌘2", sample: "Legend overlaps the last bar at narrow window widths." },
+      copy: { name: "Copy", color: "#BF5AF2", key: "⌘3", sample: 'Change "Export" to "Download report".' },
+      a11y: { name: "Accessibility", color: "#30D158", key: "⌘4", sample: "Chart labels are 3.2:1 against the background — raise to 4.5:1." },
+      question: { name: "Question", color: "#FF9F0A", key: "⌘5", sample: "Is the May spike real usage or a tracking gap?" },
+    };
+    const CAT_ORDER = ["design", "bug", "copy", "a11y", "question"];
+    const tint = (hex, a) => hex + a; /* 8-digit hex alpha */
+
+    /* ---------- interactive category picker (workflow step 2) ---------- */
+    const catChipsWrap = document.getElementById("catChips");
     const catPreview = document.getElementById("catPreview");
     const catBadge = document.getElementById("catBadge");
     const catLabel = document.getElementById("catLabel");
+    const catKey = document.getElementById("catKey");
     const catText = document.getElementById("catText");
 
-    function setCategory(cat) {
-      const data = CATEGORIES[cat];
-      if (!data) return;
+    CAT_ORDER.forEach((key) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.dataset.cat = key;
+      chip.className = "cat-chip inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-xs font-semibold transition";
+      chip.innerHTML = `${catIcon(key, "h-3.5 w-3.5")}${CATS[key].name}<span class="keycap keycap-sm">${CATS[key].key}</span>`;
+      chip.addEventListener("click", () => setCategory(key));
+      catChipsWrap.appendChild(chip);
+    });
 
-      catChips.forEach((chip) => {
+    function setCategory(cat) {
+      const meta = CATS[cat];
+      catChipsWrap.querySelectorAll(".cat-chip").forEach((chip) => {
         const active = chip.dataset.cat === cat;
         chip.setAttribute("aria-pressed", String(active));
-        chip.className = `${CHIP_BASE} ${active ? data.chip : CHIP_INACTIVE}`;
+        if (active) {
+          chip.style.borderColor = tint(CATS[cat].color, "66");
+          chip.style.background = tint(CATS[cat].color, "1f");
+          chip.style.color = "#fff";
+        } else {
+          chip.style.borderColor = "rgba(255,255,255,.1)";
+          chip.style.background = "rgba(255,255,255,.03)";
+          chip.style.color = "rgba(255,255,255,.55)";
+        }
       });
+      catPreview.style.borderColor = tint(meta.color, "40");
+      catPreview.style.background = tint(meta.color, "12");
+      catBadge.style.backgroundColor = meta.color;
+      catBadge.innerHTML = catIcon(cat, "h-4 w-4");
+      catLabel.textContent = meta.name;
+      catLabel.style.color = meta.color;
+      catKey.textContent = meta.key;
+      catText.textContent = meta.sample;
+    }
+    setCategory("design");
 
-      catPreview.className = `mt-5 rounded-2xl border p-4 transition-colors ${data.preview}`;
-      catBadge.className = `review-type-badge shrink-0 border text-sm font-semibold ${data.badge}`;
-      catBadge.textContent = data.glyph;
-      catLabel.className = `text-sm font-semibold ${data.label}`;
-      catLabel.textContent = data.name;
-      catText.textContent = data.text;
+    /* ---------- live overlay demo ---------- */
+    const demo = document.getElementById("captureDemo");
+    const pinCountEl = document.getElementById("pinCount");
+
+    const SEED_PINS = [
+      { id: 1, cat: "design", text: "The Export button is nearly invisible — use the filled accent style.", x: 89.5, y: 21 },
+      { id: 2, cat: "question", text: "Is the May spike real usage or a tracking gap?", x: 47.5, y: 55 },
+    ];
+    let pins = SEED_PINS.map((p) => ({ ...p }));
+    let pinIdSeed = pins.length;
+    let composer = null;
+    let composerOpenFor = null; /* pin id or "new" */
+
+    function renderPins() {
+      demo.querySelectorAll(".pin-marker").forEach((el) => el.remove());
+      pins.forEach((pin, index) => {
+        const meta = CATS[pin.cat];
+        const marker = document.createElement("button");
+        marker.type = "button";
+        marker.className = "pin-marker";
+        marker.style.left = `${pin.x}%`;
+        marker.style.top = `${pin.y}%`;
+        marker.style.backgroundColor = meta.color;
+        marker.dataset.pinId = String(pin.id);
+        marker.textContent = String(index + 1);
+        marker.setAttribute("aria-label", `Feedback ${index + 1}, ${meta.name}: ${pin.text}`);
+        if (composerOpenFor === pin.id) marker.classList.add("selected");
+        marker.addEventListener("click", (event) => {
+          event.stopPropagation();
+          if (marker.dataset.justDragged) return;
+          openComposer(pin.id, pin.x, pin.y);
+        });
+        marker.addEventListener("pointerdown", (event) => startPinDrag(event, pin, marker));
+        demo.appendChild(marker);
+      });
+      pinCountEl.textContent = pins.length === 1 ? "1 pin" : `${pins.length} pins`;
     }
 
-    catChips.forEach((chip) => chip.addEventListener("click", () => setCategory(chip.dataset.cat)));
+    /* drag a placed pin — like the app's overlay. Click (< 4px movement) still opens the composer. */
+    function startPinDrag(event, pin, marker) {
+      if (event.button !== 0) return;
+      const rect = demo.getBoundingClientRect();
+      const startX = event.clientX;
+      const startY = event.clientY;
+      let dragged = false;
+      marker.setPointerCapture(event.pointerId);
+
+      const onMove = (e) => {
+        if (!dragged && Math.hypot(e.clientX - startX, e.clientY - startY) < 4) return;
+        if (!dragged) {
+          dragged = true;
+          marker.classList.add("dragging");
+          /* hide composer without re-rendering — renderPins() would destroy this marker mid-drag */
+          if (composer) composer.style.display = "none";
+          composerOpenFor = null;
+          demo.querySelectorAll(".pin-marker.selected").forEach((m) => m.classList.remove("selected"));
+        }
+        pin.x = Math.min(Math.max(((e.clientX - rect.left) / rect.width) * 100, 2), 98);
+        pin.y = Math.min(Math.max(((e.clientY - rect.top) / rect.height) * 100, 6), 96);
+        marker.style.left = `${pin.x}%`;
+        marker.style.top = `${pin.y}%`;
+      };
+
+      const onUp = () => {
+        marker.removeEventListener("pointermove", onMove);
+        marker.removeEventListener("pointerup", onUp);
+        marker.removeEventListener("pointercancel", onUp);
+        marker.classList.remove("dragging");
+        if (dragged) {
+          /* the click event fires right after pointerup — flag it so it doesn't open the composer */
+          marker.dataset.justDragged = "1";
+          setTimeout(() => delete marker.dataset.justDragged, 0);
+          refreshStaticBrief();
+        }
+      };
+
+      marker.addEventListener("pointermove", onMove);
+      marker.addEventListener("pointerup", onUp);
+      marker.addEventListener("pointercancel", onUp);
+    }
+
+    function ensureComposer() {
+      if (composer) return composer;
+      composer = document.createElement("div");
+      composer.id = "composer";
+      composer.className = "popover-panel absolute z-40 flex w-[300px] max-w-[calc(100%-1.5rem)] cursor-default flex-col gap-2.5 rounded-xl p-3";
+      composer.innerHTML = `
+        <div class="flex items-center gap-1" data-role="cats" role="group" aria-label="Category"></div>
+        <textarea data-role="text" rows="3" placeholder="Describe the change…" class="w-full resize-none rounded-lg border border-white/10 bg-white/[.05] p-2.5 text-xs leading-5 text-white/90 placeholder-white/30 focus:border-sys-blue/60 focus:outline-none"></textarea>
+        <div class="flex items-center justify-between gap-2">
+          <button type="button" data-role="delete" class="text-[11px] font-medium text-white/40 transition hover:text-sys-red">Delete</button>
+          <div class="flex items-center gap-2">
+            <span class="hidden items-center gap-1 text-[10px] text-white/30 sm:flex"><span class="keycap keycap-sm">⌘</span><span class="keycap keycap-sm">↩</span></span>
+            <button type="button" data-role="cancel" class="rounded-lg border border-white/10 px-3 py-1.5 text-[11px] font-semibold text-white/60 transition hover:text-white/90">Cancel</button>
+            <button type="button" data-role="save" class="rounded-lg bg-sys-blue px-3.5 py-1.5 text-[11px] font-semibold text-white transition hover:bg-[#2f96ff] disabled:opacity-40">Save Feedback</button>
+          </div>
+        </div>
+      `;
+      demo.appendChild(composer);
+
+      const catsWrap = composer.querySelector('[data-role="cats"]');
+      CAT_ORDER.forEach((key) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.dataset.cat = key;
+        btn.title = `${CATS[key].name} (${CATS[key].key})`;
+        btn.setAttribute("aria-label", CATS[key].name);
+        btn.className = "composer-cat flex h-8 w-8 items-center justify-center rounded-lg transition";
+        btn.innerHTML = catIcon(key, "h-4 w-4");
+        btn.addEventListener("click", () => {
+          composer.dataset.activeCat = key;
+          paintComposerCats();
+        });
+        catsWrap.appendChild(btn);
+      });
+
+      const textarea = composer.querySelector('[data-role="text"]');
+      const saveBtn = composer.querySelector('[data-role="save"]');
+      textarea.addEventListener("input", () => {
+        saveBtn.disabled = textarea.value.trim().length === 0;
+      });
+
+      saveBtn.addEventListener("click", saveComposer);
+      composer.querySelector('[data-role="cancel"]').addEventListener("click", closeComposer);
+      composer.querySelector('[data-role="delete"]').addEventListener("click", () => {
+        pins = pins.filter((pin) => pin.id !== composerOpenFor);
+        closeComposer();
+        renderPins();
+      });
+
+      /* the app's composer keys: ⌘1–5 category, ⌘↩ save, Esc cancel */
+      composer.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") { event.stopPropagation(); closeComposer(); return; }
+        if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+          event.preventDefault();
+          if (!saveBtn.disabled) saveComposer();
+          return;
+        }
+        if ((event.metaKey || event.ctrlKey) && /^[1-5]$/.test(event.key)) {
+          event.preventDefault();
+          composer.dataset.activeCat = CAT_ORDER[Number(event.key) - 1];
+          paintComposerCats();
+        }
+      });
+
+      composer.addEventListener("click", (event) => event.stopPropagation());
+      return composer;
+    }
+
+    function paintComposerCats() {
+      const active = composer.dataset.activeCat;
+      composer.querySelectorAll(".composer-cat").forEach((btn) => {
+        const meta = CATS[btn.dataset.cat];
+        if (btn.dataset.cat === active) {
+          btn.style.background = tint(meta.color, "2e");
+          btn.style.color = meta.color;
+        } else {
+          btn.style.background = "transparent";
+          btn.style.color = "rgba(255,255,255,.45)";
+        }
+      });
+    }
+
+    function openComposer(pinId, xPct, yPct) {
+      const el = ensureComposer();
+      const existing = pins.find((pin) => pin.id === pinId);
+      composerOpenFor = existing ? pinId : "new";
+
+      el.dataset.activeCat = existing ? existing.cat : "design";
+      el.dataset.pendingX = xPct;
+      el.dataset.pendingY = yPct;
+      const textarea = el.querySelector('[data-role="text"]');
+      textarea.value = existing ? existing.text : "";
+      el.querySelector('[data-role="save"]').disabled = textarea.value.trim().length === 0;
+      el.querySelector('[data-role="delete"]').classList.toggle("hidden", !existing);
+      paintComposerCats();
+
+      const rect = demo.getBoundingClientRect();
+      const xPx = (xPct / 100) * rect.width;
+      const yPx = (yPct / 100) * rect.height;
+      const half = Math.min(155, rect.width / 2 - 8);
+      el.style.left = `${Math.min(Math.max(xPx, half + 8), rect.width - half - 8)}px`;
+      const below = yPx < rect.height - 240;
+      el.style.top = below ? `${yPx + 18}px` : `${yPx - 18}px`;
+      el.style.transform = below ? "translateX(-50%)" : "translate(-50%, -100%)";
+      el.style.display = "flex";
+      renderPins();
+      textarea.focus();
+    }
+
+    function closeComposer() {
+      if (composer) composer.style.display = "none";
+      composerOpenFor = null;
+      renderPins();
+    }
+
+    function saveComposer() {
+      const text = composer.querySelector('[data-role="text"]').value.trim();
+      if (!text) return;
+      const cat = composer.dataset.activeCat;
+
+      if (composerOpenFor !== "new") {
+        const pin = pins.find((p) => p.id === composerOpenFor);
+        if (pin) { pin.cat = cat; pin.text = text; }
+      } else {
+        pins.push({
+          id: ++pinIdSeed,
+          cat,
+          text,
+          x: Number(composer.dataset.pendingX),
+          y: Number(composer.dataset.pendingY),
+        });
+      }
+      closeComposer();
+      renderPins();
+      const added = demo.querySelector(".pin-marker:last-of-type");
+      if (added && !reducedMotion) added.classList.add("pin-drop");
+    }
+
+    demo.addEventListener("click", (event) => {
+      if (event.target.closest(".pin-marker, #composer, #overlayToolbar")) return;
+      if (composerOpenFor !== null) { closeComposer(); return; }
+      const rect = demo.getBoundingClientRect();
+      const xPct = ((event.clientX - rect.left) / rect.width) * 100;
+      const yPct = ((event.clientY - rect.top) / rect.height) * 100;
+      openComposer(null, Math.min(Math.max(xPct, 2), 98), Math.min(Math.max(yPct, 6), 96));
+    });
+
+    document.getElementById("overlayToolbar").addEventListener("click", (event) => event.stopPropagation());
+    document.getElementById("resetDemoBtn").addEventListener("click", () => {
+      pins = SEED_PINS.map((p) => ({ ...p }));
+      pinIdSeed = Math.max(...pins.map((p) => p.id));
+      closeComposer();
+    });
+
+    renderPins();
+
+    /* ---------- export builders (mirroring the app's models/export.ts) ---------- */
+    const REVIEW_TITLE = "Lumen — Overview";
+    const APP_NAME = "Lumen";
+
+    function captureSize() {
+      const rect = demo.getBoundingClientRect();
+      return { w: Math.round(rect.width * 2), h: Math.round(rect.height * 2) };
+    }
+
+    function reviewedAt() {
+      const d = new Date();
+      const date = d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+      const time = d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+      return `${date} at ${time}`;
+    }
+
+    function contextBlock() {
+      const { w, h } = captureSize();
+      return [
+        "## Context",
+        "",
+        `- Application: ${APP_NAME}`,
+        `- Window: ${REVIEW_TITLE}`,
+        `- Capture size: ${w} x ${h}`,
+        `- Reviewed: ${reviewedAt()}`,
+      ].join("\n");
+    }
+
+    function buildAgentBrief() {
+      const { w, h } = captureSize();
+      const parts = [`# ${REVIEW_TITLE}`, "", contextBlock(), "", "## Feedback"];
+      if (!pins.length) {
+        parts.push("", "_No feedback items yet._");
+      }
+      pins.forEach((pin, index) => {
+        parts.push(
+          "",
+          `### ${index + 1}. ${CATS[pin.cat].name}`,
+          "",
+          `Position: ${pin.x.toFixed(1)}% from left, ${pin.y.toFixed(1)}% from top`,
+          "",
+          pin.text
+        );
+      });
+      parts.push(
+        "",
+        "## Implementation request",
+        "",
+        "Address each numbered item at its root cause — the fix may live in the UI, application " +
+          "logic, or the data/model layer, not necessarily where it is visible. Preserve unrelated " +
+          `behavior and report how each numbered item was addressed. The screenshot was captured at ${w} x ${h}.`
+      );
+      return parts.join("\n");
+    }
+
+    function buildMarkdown() {
+      const parts = [`# ${REVIEW_TITLE}`, "", contextBlock(), "", "## Feedback"];
+      if (!pins.length) parts.push("", "_No feedback items yet._");
+      pins.forEach((pin, index) => {
+        parts.push("", `### ${index + 1}. ${CATS[pin.cat].name}`, "", pin.text);
+      });
+      parts.push(
+        "",
+        "## Implementation request",
+        "",
+        "Address each numbered item at its root cause — the fix may be in the UI, logic, or data " +
+          "layer, not necessarily where it appears — while preserving unrelated behavior."
+      );
+      return parts.join("\n");
+    }
+
+    function buildPlainList() {
+      if (!pins.length) return "No feedback items.";
+      return pins.map((pin, index) => `${index + 1}. [${CATS[pin.cat].name}] ${pin.text}`).join("\n");
+    }
+
+    /* static preview in workflow step 3 */
+    const staticBrief = document.getElementById("staticBrief");
+    function refreshStaticBrief() { staticBrief.textContent = buildAgentBrief(); }
+    refreshStaticBrief();
+
+    /* ---------- export modal ---------- */
+    const exportModal = document.getElementById("exportModal");
+    const exportOutput = document.getElementById("exportOutput");
+    const exportTabs = document.querySelectorAll(".export-tab");
+    let exportActiveTab = "agent";
+    let exportLastFocused = null;
+
+    const BUILDERS = { agent: buildAgentBrief, markdown: buildMarkdown, plain: buildPlainList };
+
+    function renderExportTab() {
+      exportOutput.textContent = BUILDERS[exportActiveTab]();
+      exportTabs.forEach((tab) => {
+        const active = tab.dataset.tab === exportActiveTab;
+        tab.setAttribute("aria-selected", String(active));
+        tab.className = `export-tab rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
+          active
+            ? "border-sys-blue/50 bg-sys-blue/15 text-white"
+            : "border-white/10 bg-white/[.03] text-white/55 hover:text-white/80"
+        }`;
+      });
+    }
+
+    exportTabs.forEach((tab) =>
+      tab.addEventListener("click", () => {
+        exportActiveTab = tab.dataset.tab;
+        renderExportTab();
+      })
+    );
+
+    function openExportModal(tab) {
+      exportActiveTab = tab;
+      renderExportTab();
+      refreshStaticBrief();
+      exportModal.classList.remove("hidden");
+      exportModal.classList.add("flex");
+      exportLastFocused = document.activeElement;
+      document.getElementById("exportModalClose").focus();
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeExportModal() {
+      exportModal.classList.add("hidden");
+      exportModal.classList.remove("flex");
+      document.body.style.overflow = "";
+      if (exportLastFocused) exportLastFocused.focus();
+    }
+
+    document.getElementById("finishReviewBtn").addEventListener("click", () => openExportModal("agent"));
+    document.getElementById("previewExportBtn").addEventListener("click", () => openExportModal("agent"));
+    document.getElementById("exportModalClose").addEventListener("click", closeExportModal);
+    exportModal.addEventListener("click", (event) => {
+      if (event.target === exportModal) closeExportModal();
+    });
+
+    document.getElementById("exportCopyBtn").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(exportOutput.textContent);
+        const hint = document.getElementById("exportCopiedHint");
+        hint.classList.remove("opacity-0");
+        setTimeout(() => hint.classList.add("opacity-0"), 1400);
+      } catch (error) {
+        /* clipboard needs a secure context — select the text so ⌘C works */
+        const range = document.createRange();
+        range.selectNodeContents(exportOutput);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      closeComposer();
+      if (!exportModal.classList.contains("hidden")) closeExportModal();
+    });
+
+    /* ---------- PR integration wireframe (GitHub / Bitbucket chrome swap) ---------- */
+    const PROVIDERS = {
+      github: {
+        frame: { background: "#010409", borderColor: "#30363d" },
+        card: { background: "#0d1117", borderColor: "#30363d" },
+        header: { background: "#161b22", borderColor: "#30363d" },
+        label: null,
+        frameTopHtml: `
+          <p class="text-[15px] font-semibold text-white/90">Improve dashboard contrast <span class="font-normal text-white/40">#128</span></p>
+          <div class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-xs text-white/50">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-[#238636] px-2.5 py-1 text-[11px] font-semibold text-white">
+              <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><line x1="6" x2="6" y1="9" y2="21"/></svg>
+              Open
+            </span>
+            <span><span class="font-semibold text-white/70">johndoe</span> wants to merge 1 commit into <code class="rounded bg-[#388bfd]/15 px-1.5 py-0.5 text-[11px] text-[#58a6ff]">main</code> from <code class="rounded bg-[#388bfd]/15 px-1.5 py-0.5 text-[11px] text-[#58a6ff]">fix/export-contrast</code></span>
+          </div>
+          <div class="mt-4 flex gap-5 text-xs text-white/50">
+            <span class="border-b-2 border-[#f78166] pb-2.5 font-semibold text-white">Conversation <span class="ml-0.5 rounded-full bg-white/10 px-1.5 py-0.5 text-[10px]">1</span></span>
+            <span class="pb-2.5">Commits <span class="ml-0.5 rounded-full bg-white/10 px-1.5 py-0.5 text-[10px]">1</span></span>
+            <span class="hidden pb-2.5 sm:inline">Checks</span>
+            <span class="pb-2.5">Files changed <span class="ml-0.5 rounded-full bg-white/10 px-1.5 py-0.5 text-[10px]">2</span></span>
+          </div>`,
+        headerHtml: `
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-sys-blue to-sys-purple text-[11px] font-semibold text-white">J</span>
+          <p class="text-[13px] text-white/60"><span class="font-semibold text-white/90">johndoe</span> commented <span class="text-white/40">just now</span></p>
+          <span class="ml-auto rounded-full border border-white/15 px-2 py-0.5 text-[10px] text-white/45">Member</span>`,
+      },
+      bitbucket: {
+        frame: { background: "#161a1d", borderColor: "rgba(255,255,255,.12)" },
+        card: { background: "#22272b", borderColor: "rgba(255,255,255,.12)" },
+        header: { background: "#282e33", borderColor: "rgba(255,255,255,.12)" },
+        label: "Activity",
+        frameTopHtml: `
+          <p class="text-[11px] text-white/40">acme <span class="mx-0.5">/</span> lumen <span class="mx-0.5">/</span> Pull requests <span class="mx-0.5">/</span> #128</p>
+          <p class="mt-1.5 text-[15px] font-semibold text-white/90">Improve dashboard contrast</p>
+          <div class="mt-2.5 flex flex-wrap items-center gap-2 pb-4 text-xs text-white/50">
+            <span class="rounded bg-[#2684FF]/20 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-[#579DFF]">OPEN</span>
+            <code class="rounded bg-white/10 px-1.5 py-0.5 text-[11px] text-white/70">fix/export-contrast</code>
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 text-white/40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <code class="rounded bg-white/10 px-1.5 py-0.5 text-[11px] text-white/70">main</code>
+          </div>`,
+        headerHtml: `
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[#2684FF] text-[11px] font-semibold text-white">JD</span>
+          <p class="text-[13px]"><span class="font-semibold text-white/90">John Doe</span> <span class="text-white/40">· a minute ago</span></p>
+          <span class="ml-auto rounded px-2 py-0.5 text-[10px] font-medium text-[#579DFF]" style="background:rgba(38,132,255,.15)">AUTHOR</span>`,
+      },
+    };
+
+    const prFrame = document.getElementById("prFrame");
+    const prFrameTop = document.getElementById("prFrameTop");
+    const prFrameLabel = document.getElementById("prFrameLabel");
+    const prMock = document.getElementById("prMock");
+    const prMockHeader = document.getElementById("prMockHeader");
+    const prTabs = document.querySelectorAll(".pr-tab");
+
+    function setProvider(name) {
+      const p = PROVIDERS[name];
+      prFrame.style.background = p.frame.background;
+      prFrame.style.borderColor = p.frame.borderColor;
+      prFrameTop.style.borderColor = p.frame.borderColor;
+      prFrameTop.innerHTML = p.frameTopHtml;
+      prFrameLabel.classList.toggle("hidden", !p.label);
+      prFrameLabel.textContent = p.label || "";
+      prMock.style.background = p.card.background;
+      prMock.style.borderColor = p.card.borderColor;
+      prMockHeader.style.background = p.header.background;
+      prMockHeader.style.borderColor = p.header.borderColor;
+      prMockHeader.innerHTML = p.headerHtml;
+      prTabs.forEach((tab) => {
+        const active = tab.dataset.provider === name;
+        tab.setAttribute("aria-selected", String(active));
+        tab.style.borderColor = active ? "rgba(255,255,255,.3)" : "rgba(255,255,255,.1)";
+        tab.style.background = active ? "rgba(255,255,255,.1)" : "rgba(255,255,255,.03)";
+        tab.style.color = active ? "#fff" : "rgba(255,255,255,.5)";
+      });
+    }
+
+    prTabs.forEach((tab) => tab.addEventListener("click", () => setProvider(tab.dataset.provider)));
+    setProvider("github");
   </script>
 </body>
 </html>
