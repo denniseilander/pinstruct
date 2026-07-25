@@ -11,7 +11,9 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  # renamed from "pages" — that group got wedged on GitHub's side and every run
+  # using it failed at startup with an internal server error before jobs were created
+  group: pages-deploy
   cancel-in-progress: true
 
 jobs:
