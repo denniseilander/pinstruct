@@ -82,7 +82,10 @@
     .aurora {
       position: absolute;
       border-radius: 999px;
-      filter: blur(100px);
+      /* radial mask fakes the old blur(100px) falloff at ~zero compositing cost —
+         the scale animation no longer forces blur re-rasterization every frame */
+      mask-image: radial-gradient(closest-side, black, transparent);
+      -webkit-mask-image: radial-gradient(closest-side, black, transparent);
       opacity: .26;
       pointer-events: none;
       animation: drift 14s ease-in-out infinite alternate;
